@@ -1,0 +1,8 @@
+use_aws_digest_group_override = (ENV['USE_AWS_DIGEST_GROUP_OVERRIDE'] || '') != ''
+
+eval_gemfile File.expand_path('../core/Gemfile', __FILE__)
+
+if use_aws_digest_group_override
+    # override from base file. Complementary change in required in the core module.
+    gem 'cp-analysis', :git => 'git@github.com:CloudHealth/cp-analysis.git', :branch => 'titans_3790_bp'
+end
