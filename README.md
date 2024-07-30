@@ -1,6 +1,6 @@
 # aws-digest-cube-workers
 
-The `aws-digest` deployment group specific repo extends the `cp-workers` repo's cube-worker deployment unit with containerization, and k8s deployment capabilities. This repo dpesn't holds any application specific code. This fully re-uses the code base from cp-workers while this repo provides CI/CD enrichments to enable isolated testing.
+The `aws-digest` deployment group specific repo extends the `cp-workers` repo's cube-worker deployment unit with containerization, and k8s deployment capabilities. This repo doesn't holds any application specific code. This fully re-uses the code base from cp-workers and this repo provides CI/CD enrichments to enable isolated testing
 
 
 
