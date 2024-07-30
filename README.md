@@ -33,12 +33,15 @@ rvm use ruby-2.5.5
 rvm gemset use ruby-2.5.5@aws-digest-group --create
 export USE_CHT_SRC=1
 BUNDLE_GEMFILE=GemfileMriAwsDigest AWS_DIGEST_GROUP_OVERRIDE=1 bundle install
-``
+```
 
 Step 2: Running the rake
 ```sh
 cd core
-rvm gemset use ruby-2.5.5@aws-digest-group --create # VERIFY THAT WE'RE USING THE SAME GEMSET, BASED ON LOCAL SETUP AND IF WE DON'T USE RVM THIS IS NOT NEEDED
+
+# VERIFY THAT WE'RE USING THE SAME GEMSET, BASED ON LOCAL SETUP AND IF WE DON'T USE RVM NEXT CMD IS NOT NEEDED
+rvm gemset use ruby-2.5.5@aws-digest-group --create 
+
 BUNDLE_GEMFILE=../GemfileMriAwsDigest AWS_DIGEST_GROUP_OVERRIDE=1 bundle exec rake 'cubes:start'
 # modify the above to choose the right rake task
-``
+```
