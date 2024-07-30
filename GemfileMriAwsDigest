@@ -1,8 +1,12 @@
+# deployment group override variables shared between cp_workers and aws_digest_cube_workers
 enable_aws_digest_group_override = (ENV['AWS_DIGEST_GROUP_OVERRIDE'] || '') != ''
+use_cht_src = (ENV['USE_CHT_SRC'] || '') != ''
 
+# re-use the Gemfile from cp-workers
 eval_gemfile File.expand_path('../core/GemfileMri', __FILE__)
 
-if enable_aws_digest_group_override
+# make specific required overrides
+if enable_aws_digest_group_override && !use_cht_src
     # override from base file. Complementary changes required in the core module and this is an example
     gem 'cp-analysis', :git => 'git@github.com:CloudHealth/cp-analysis.git', :branch => 'titans_3790_bp'
 end

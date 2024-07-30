@@ -17,9 +17,28 @@ git submodule init
 git submodule update
 ```
 
-Alternatively you can also use this command
+Alternatively you can also use this command, once the changes are merged to prod
 
 ```sh
 # haven't tested this yet, but expecting it to work.
 git clone --recurse-submodules https://github.com/CloudHealth/aws-digest-cube-workers.git
 ```
+
+## Running sub-module
+This is very similar (if not same) to what you will do in cp-workers.
+
+Step 1: Doing a bundle install.
+```sh
+rvm use ruby-2.5.5
+rvm gemset use ruby-2.5.5@aws-digest-group --create
+export USE_CHT_SRC=1
+BUNDLE_GEMFILE=GemfileMriAwsDigest AWS_DIGEST_GROUP_OVERRIDE=1 bundle install
+``
+
+Step 2: Running the rake
+```sh
+cd core
+rvm gemset use ruby-2.5.5@aws-digest-group --create # VERIFY THAT WE'RE USING THE SAME GEMSET, BASED ON LOCAL SETUP AND IF WE DON'T USE RVM THIS IS NOT NEEDED
+BUNDLE_GEMFILE=../GemfileMriAwsDigest AWS_DIGEST_GROUP_OVERRIDE=1 bundle exec rake 'cubes:start'
+# modify the above to choose the right rake task
+``
