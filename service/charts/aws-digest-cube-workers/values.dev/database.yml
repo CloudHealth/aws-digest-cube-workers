@@ -1,0 +1,32 @@
+production:
+  adapter: mysql2
+  host: 10.172.0.13
+  database: cloudpercept
+  username: root
+  password: root_password
+  pool: 35
+  reconnect: true
+  checkout_timeout: 5
+  wait_timeout: 300
+  multidb:
+    fallback: false
+    databases:
+      master:
+        host: 10.172.0.13
+        database: cloudpercept
+
+      db1:
+        host: 10.172.0.13
+        database: cloudpercept
+        alias: master
+      db2:
+        host: 10.172.0.13
+        database: cloudpercept2
+
+      db3:
+        host: 10.172.0.13
+        database: cloudpercept3
+
+      read1:
+        host: 10.172.0.13
+        database: cloudpercept

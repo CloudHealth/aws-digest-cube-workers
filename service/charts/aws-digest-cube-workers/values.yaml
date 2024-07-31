@@ -1,0 +1,266 @@
+# IMAGE SELECTION ######################################################
+
+# image is the base name of the image to run.  Production use may need
+# to set this to have an ECR registry location.
+image: "cht/services/cube-workers"
+# tag of the image to run.  Production should set this to a specific
+# known image tag.
+tag: "12861-42be40897"
+
+# imagePullPolicy indicates when the image should be pulled from the
+# registry.  Can be set to "Always" to cause the image to always be
+# pulled, most useful if Tag is set to "latest".
+imagePullPolicy: "Always"
+
+# imagePullSecret has the name of a Kubernetes secret needed to pull
+# the image, for instance from ECR.
+# imagePullSecret: ""
+
+# canaryFor names a different Helm release for which this is a canary
+# deployment.
+# canaryFor: ""
+
+# devDeploy causes PR builds to behave differently than their
+# true-staging counterparts. This value should only ever be set to
+# true by the CI system itself.
+devDeploy: false
+
+# cluster gives the name of the Kubernetes cluster, as might appear in
+# metric tags or other contexts.
+# cluster: "???.cloudhealthtech.com"
+
+# containerRedis describes a Redis server for general container cp cache
+containerRedis:
+  # host: "redis"
+  port: 6379
+
+# WAVEFRONT ################################################################
+
+# wavefront provides common settings for sending application metrics to Wavefront.
+wavefront:
+  # host gives the host name of the Wavefront proxy.
+  host: ""
+
+  # port gives the port number of the Wavefront proxy.
+  port: 2878
+
+  # zipkinPort gives the zipkin collector port of the Wavefront proxy.
+  zipkinPort: 9411
+
+# SERVICES #############################################################
+
+# Settings here specify the endpoints of other services contacted by
+# this service.  If unset, the values shown here will be used.
+
+
+# overrideNamespace specifies an alternate default namespace to use
+# for all services.
+# overrideNamespace: ""
+
+# DETAILED COMPONENT SETTINGS ##########################################
+
+aws-digest:
+  # replicas specifies the number of copies of this pod to run.
+  replicas: 1
+
+  # minAvailable specifies the minimum allowed available replicas.  This
+  # value must be less than replicas.  This may also be a percentage,
+  # and must be less than 100%.  If unset, defaults to 0 if replicas is
+  # 1 or 1 if replicas is greater than 1.
+  # minAvailable: 1
+
+  # resources specifies resource constraints for the pod.
+  resources:
+    limits:
+      cpu: "1000m"
+      memory: "2048Mi"
+    requests:
+      cpu: "100m"
+      memory: "512Mi"
+
+  # service controls the Kubernetes Service object.
+  service:
+    type: ClusterIP
+    annotations:
+      {}
+
+  # enabled causes Kubernetes resources to be generated for this
+  # component.  True by default; if set to false then no Kubernetes
+  # objects are generated at all, regardless of other settings.
+  # enabled: true
+
+# CHT FRAMEWORK ########################################################
+
+# cht defines internal settings for the CloudHealth Technologies
+# chart framework.  Only the chart author should change these.
+# If they do, they should re-run the bootstrap script to regenerate
+# content.
+cht:
+  # team, if set, is used as a value for a "cht_tower" label
+  # that is applied to each resource created by this chart. This
+  # label is passed along through to datadog.
+  # team: "myteam"
+
+  # features gives a list of features this chart uses.
+  features:
+    - aws-digest-local
+    - local
+    - wavefront
+    - services
+    - hpa
+    - gcp
+    - rollbar
+
+  # components defines the pods this chart runs.
+  components:
+    - command: source /usr/local/rvm/scripts/rvm  && rvm use 2.5.5@cubes && BUNDLE_GEMFILE=GemfileMri bundle exec rake cur_availability:start
+      hpa: false
+      # Set it to true after ENG-52297 is completed
+      long_running_job: false
+      name: aws-digest
+      ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+
+
+  # imagePerComponent requests a separate image for each component
+  # named above.
+  imagePerComponent: false
+
+  # secretSource indicates where secret values come from.  If "helm"
+  # then they are managed by this values file.  If "k8s" then they
+  # are injected externally.
+  secretSource: helm
+
+  # services specifies the list of service endpoints that can be
+  # configured.  Any camelCased name is valid.
+  services:
+    []
+
+
+cp:
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 500m
+  cubeList:
+    - cubeType: aws-digest
+rails:
+  environment: production
+
+
+environment: dev
+
+isGKE: true
+
+gkeNodePoolSelector:
+  enabled: true
+  nodePoolName:
+    vmwchtGreen: true
+  labelKey: node_pool
+
+deployment:
+  provider: gcp
+
+cur_coordinator:
+  emr_customer_id: ENC[AES256_GCM,data:2vcSEA==,iv:yiXRmZ7j4uasXcBWLLF4ZideK7swPDJDfRND87j7Rgc=,tag:+xOojW1SfLk3oFd29o2Dsg==,type:int]
+  emr_aws_account_id: ENC[AES256_GCM,data:ZkIXQ5zZGRY/cL0=,iv:P3SS5snf7MSXfU8NL3k/NxMVhTfjmu74rZrmfHxpIFQ=,tag:tqkYglSxAD9soPAm8SdWtQ==,type:int]
+database:
+  username: ENC[AES256_GCM,data:hagG7UY=,iv:iVM75em0HC13NzfPO9VV7XPId9mz/jkhtLPir8q8xbQ=,tag:vxsJwyidGFv20Rp5qHWdQQ==,type:str]
+  password: ENC[AES256_GCM,data:BJds0a1BHqlca7/ztfq+ug==,iv:BWfCT7chlvTw3jN6ONMlbFg855iagGu3ygGEtQ58lBA=,tag:ciXqilPUH1hrSKytSzQcxw==,type:str]
+newrelic:
+  license_key: ENC[AES256_GCM,data:1yA4Uu/f0p3rhgfd9bf/sNw7gFw4oALaeNfueJtGbLnwZQidm4jVmg==,iv:5hZvlE7UFAY5Vr1dshzoQAcJyLkcXEqgzMOxlHh4LGQ=,tag:inTCYyU9P9Ml1X2UVtuztQ==,type:str]
+queues:
+  cubes:
+    username: ENC[AES256_GCM,data:ZoD9j9cdVP2mVgOSJj/I6ufGFLU=,iv:ItbZytkM2L8BTm3BkPD2VtMFXQo6j6n8cW3aB0NKHQY=,tag:L1/jsvQ3azpPNDCZK8zSWQ==,type:str]
+    password: ENC[AES256_GCM,data:QEj/4RU5NiIu16VIyXhlLYovnIU=,iv:DeMtHoKszNO9JOX60SFJaka8ARJbb7SMxt7yQNQPFqE=,tag:vpj7vvYRh/Et4xX0DLbSEQ==,type:str]
+  superasterisk:
+    username: ENC[AES256_GCM,data:YvSFp0i/H6sXm+I6pRg9h740Wig=,iv:6Irvy2AJ+1RLtr9y4sOib/HxFEJ2C6zEPII5CujEgm8=,tag:7t8FskNuWAK2hFh7pKkpcA==,type:str]
+    password: ENC[AES256_GCM,data:rt38zTd4W7CUIVgRc3f/3VwjHv8=,iv:OiJTtBEw12Ias5yXZGrCsox+4r3kxPcTpQVSUgtxRv4=,tag:emxH2mJe4gibeMaB6jjVog==,type:str]
+aws_keys:
+  chealth-s3-access-id: ENC[AES256_GCM,data:SReo7qUgN1RcJLz7HB71rvDHFk8=,iv:lv4Y3QeaZhraZIb2AkpkadL+V3TBdZtpRmHeZATgRCE=,tag:2KNrsebwKp1/2UtARPZVJQ==,type:str]
+  chealth-s3-secret-key: ENC[AES256_GCM,data:6dwGLlgMHQKPJjoTHSzWgPZWQN17i8ho+kaHAZXxga95QRGtCBooaA==,iv:eP6AEGLQ222ihoNXXOE/wGHasIRdVTokIJWwomZVpMY=,tag:0AEK0GWsMzJNxmcqa432bg==,type:str]
+  wr_access_key_id: ENC[AES256_GCM,data:yvI0tWvU8l/BU4GBUFSoPEu+UBE=,iv:qMc0mkLHh3Sx7lnb7mjmi4R3wXcXyHSyfwgd9jJy/BQ=,tag:lIVKWCpnK0LqtvL6qE3AqA==,type:str]
+  wr_secret_access_key: ENC[AES256_GCM,data:5UqkhOPVyuWojwqzzTg7zO/qK2kMA673NA5Bv8vAi0w69KHgqUGkjg==,iv:uF5fpbhUEJP2eWMGmhPTipVNaytg/K4HpKTZ2uGG/1A=,tag:W9UgMZX8ZMOvgUu3P5/j/Q==,type:str]
+  ro_access_key_id: ENC[AES256_GCM,data:ESvYscx4D2VOdyo+2vDsCAJhGCY=,iv:jDA6HZG0TixbQ/HEyLgeFvgRjyX9HOb6PBeRVejH+CA=,tag:QIdLgqsEQUDmN3/OT3QU7g==,type:str]
+  ro_secret_access_key: ENC[AES256_GCM,data:5yWl0GRcIalClbK/mZdPMlYl4cysZG6F0G3rpV6Wl8UX5142NqKkTQ==,iv:p60hlbSS5nOh2M5hMs/zh25f6KnEjBHrBucl20a08Eg=,tag:szmDP6ECRz4Iv6Bq92f7yQ==,type:str]
+  snapshot_access_key_id: ENC[AES256_GCM,data:wIEkPbAfhhrNZWEx4uOGT4vft6Q=,iv:Sm7EifOGr6TYttYmBdlyRG5xT3bTRF/YNlLsvYrq1ls=,tag:f8mJbOVW2KEwJopyyCJUrA==,type:str]
+  snapshot_secret_access_key: ENC[AES256_GCM,data:8ilcjZkXxVgY5J35YMFf1fRPokkPmGCHZ+QKFkt7RNhRMK0cXz2VDQ==,iv:j/zc2NqGBhtPsR4Sbk7gRkAaW/ctoO3RlWpVWRJPc50=,tag:qBkPNB965uMk+8+07sB3BA==,type:str]
+  readonly_access_key_id: ENC[AES256_GCM,data:7KdXNcHx5iQlHQIFYXV2VPFmX5c=,iv:IeHKXHzs2v+66qxfWqADgKF3ShYfjEHaEtKIRCf5pak=,tag:bUTCWbdzgonPSWGi/CV2bQ==,type:str]
+  readonly_secret_access_key: ENC[AES256_GCM,data:a1K4bQzJjfycO0xjWj1prRPzQbAh8B0X4JMjId/7HbwwpWvQt52Wdg==,iv:UmRWUbt8GsVJfL6yMjCyS1rgo8QLpIw79S1ZqOrMLMY=,tag:o/Y674iIF8j/DsE2b94T6Q==,type:str]
+  export_access_key_id: ENC[AES256_GCM,data:oqI54pXdj321Yz/9ik6djfozF8o=,iv:wN1I2xTi7yGTYS9eu4tChyGGc6KwkDeU7q3wxFcC+ZU=,tag:/6GGqrA6dO2c2MykiGrW7A==,type:str]
+  export_secret_access_key: ENC[AES256_GCM,data:UZg1hsDIvUZsefelGyJZeMCvYDIVjEBI8JkFBajK0e7KMMuln3FmFQ==,iv:CydwuowCYP5+HFipV0LmyT69EviyGExyaP5arppdZ5A=,tag:4K02WrwTooAzD6MOAZe0Lw==,type:str]
+  backup_access_key_id: ENC[AES256_GCM,data:AIh8IiiXFUP5kgmiYDnaCnK8Qa4=,iv:Civinm6rdiN+NEvZ9VLii09xXRAvCOPPSXSyDIlBtjs=,tag:hOnw1mnMT7n4vnNuZGTMLQ==,type:str]
+  backup_secret_access_key: ENC[AES256_GCM,data:zaZ0puNDOOoM/Pa6Fpgrxk6FzoMpoBArS8IBqzAH6maei8XetrZwag==,iv:eHbjBl/V1Hjz7SE5cDs1jhdP4MmoCclGkscM8dGeAos=,tag:Nk3gDTW2IEiTcALtMvOD1g==,type:str]
+  druid_access_key_id: ENC[AES256_GCM,data:W+6zXS3nT9lnlAY2mDPNKXciMWY=,iv:bZvNC4ybDM6ob6Er0rF6L7A9nuIdLEIbSk7IddyWxnU=,tag:rNtuuUHP9gpkfXPPvExjtQ==,type:str]
+  druid_secret_access_key: ENC[AES256_GCM,data:WGpfOIb6jQnB9N2B4zT51ZW46hGmOu3hkhdyxMq8bdRsE9G3vz/Tuw==,iv:58ly89V1YHR6m53gF5jHj3ydvWQ8NGcjWqOgbjc0sLs=,tag:wiavpMRamUu3akSnT64AcQ==,type:str]
+  emr_access_key_id: ENC[AES256_GCM,data:8nVEhVyTtPrH8k5RCoCu/q3kINw=,iv:WWgIBqDDl3mhh/IM52NL+7Z6CmXlx1z0FYL6Z53i/WQ=,tag:cFsEcimqgHjBuDi8tsxxBA==,type:str]
+  emr_secret_access_key: ENC[AES256_GCM,data:TlXn5RFyuhQqnLSfF1QnJiVBsaAitYed8A/TlMDkIpT6pLqLsKMufA==,iv:itw6aflPhWEc3AIsHXZcSSmmcLphKFubTA/LtZCgleY=,tag:epr+VWEz8eRSZBUQFOeeKg==,type:str]
+  ch_s3_wr_access_key_id: ENC[AES256_GCM,data:VrRD11A8G1EQ3zo/fbW+8gob9xg=,iv:SVQ02JcFAdDrmO0lJdeZ077NYP0XpHZaQUVjp1dhpuw=,tag:tzKHctUpWWyXRZmKkV5Gdw==,type:str]
+  ch_s3_wr_secret_access_key: ENC[AES256_GCM,data:6FztzSEQ420uhv7eE1p8FGKjR2J/5pb4/ufJs2cBeQ47ACP88PTNRQ==,iv:eZd3CSx+bUE/MM4edPZgnBHuXwkoNeymvY3WoOXb5AY=,tag:SYOfrYiW6TkWI1H/ZPhYAA==,type:str]
+  druid_access_key: ENC[AES256_GCM,data:78ro4tFRORkYuU/DCb6/fiXrYtg=,iv:RwlDFqKN/jbfEdBBFEqa2RET1zLtSJ9saIhzV3tONQk=,tag:EAtEmvwJCKG4L/S2I4+zoA==,type:str]
+  druid_secret_key: ENC[AES256_GCM,data:vqYI7HEogHx8OD32Ew4isHEazyA6PwIQiYWm3dGYBnE5Fn6iU2lJ8Q==,iv:R23sVTU/SqwI/bKA7TnA73/j2tTkQ5mcYl7+4XlXvbI=,tag:RLYgNqhcxsW85vctBQxzCg==,type:str]
+  pricing_update_access_key: ENC[AES256_GCM,data:ZMXTZZk6pGwVz3Cysx1MSRoNW9U=,iv:Tb1dNgf1PA3+x156M8ABa9Dqg8g39kQBY2PYZl4MEfU=,tag:I2+MEFutM2rp6xi7+MZApg==,type:str]
+  pricing_update_secret_key: ENC[AES256_GCM,data:QygGNG1JOIxD6TdzWnECWRvpUIgJgva0x9pz4IhAcT5n9NRJadkK6Q==,iv:5QgQQ6X0ATFQg84BdgyKH5UizDbX+KlIRVuClddBg3o=,tag:rAaCgG8/0nMSGR5ciC9sLw==,type:str]
+  rollbar_token: ENC[AES256_GCM,data:MfwZjcxfZf/SCLoaRDdg4XmEdZ1ZEj754zuGawLf0ws=,iv:mK/UNosvdJc5o4Yjp9+mO3YpCTOlljiw12ALQUGIATk=,tag:A5pJn4DyG6lkX97IvwD9IQ==,type:str]
+  gs_cache_access_key: ENC[AES256_GCM,data:qDM7GZlJLBFhAsBXIqE/Zi2N8us=,iv:QEapytdPF8zVTQruT984dD6v2hhPkBQswmZD51yyZwQ=,tag:lspLmf38WVlTkwVfybkJkg==,type:str]
+  gs_cache_secret_key: ENC[AES256_GCM,data:V8jfsL8=,iv:7P8DLTROFoybDbEquUXKF4ea5H33NwahAKAyUhgyRyc=,tag:78VBy8IDmM/TFnirAab/Bw==,type:str]
+  apportioning:
+    access_key_id: ENC[AES256_GCM,data:ocOACca/GIRZ/LEDG+I08munw3g=,iv:BbmaMBryilOo8GocwU5ilFjmP8ldztuad9ihcZM1Pkg=,tag:RVNelnEBhJ4kdt+P3NA5fg==,type:str]
+    secret_access_key: ENC[AES256_GCM,data:EKh/x9zG33+fN4KcZwF/30Asyei597ujS/aDAe0cGPqraIqk7KwwOg==,iv:gDaiNj8NyOSVlVJSOu3RSdahH7IamVZliQ6dUbmZtdE=,tag:DaHiOMX3zSoZflaxl9nViQ==,type:str]
+azure:
+  cpv_client_id: ENC[AES256_GCM,data:Zg9VlAk=,iv:9XdDjhee72Ek79maJFTuwjIz7fp7UMuAmNRwwQJMrNU=,tag:BgMJzyJTzWelmWdPeeftjQ==,type:str]
+  cpv_secret_key: ENC[AES256_GCM,data:2IKsQnA=,iv:p5gZoUjk8EDCluONh4qCRlYhbuwrtib1bt5n2EsD7lA=,tag:IIYbu/T/kwZo2s5HP55doQ==,type:str]
+mailer:
+  user_name: ENC[AES256_GCM,data:YCPJpeND,iv:nC2TSqKTuNK6dxJp/wMGnyiElD8k3IsKoVPP2FphP2E=,tag:J3qdh76qZ0OaSVzTwCb3sQ==,type:str]
+  password: ENC[AES256_GCM,data:KiI03QPFb8PZTrYFvmAJvIOE9LAa8WIngVn4FEeqceHfkuyrtdcTmEs3JyxTESq/BHCXCAIpGl0xIqsLvnY51ctbA9B1,iv:vJd2IkaodcS6PKBhfEUnxkdiy1gbVY8A79Ik/TBrAMU=,tag:j/zZMtdJG8sRhPFaPT94ig==,type:str]
+  tls_user_name: ENC[AES256_GCM,data:gzXbf8sN,iv:EZz/1u5lhnEeGXZAbqpO897Oew5KhNLjEZVWNepjKCQ=,tag:0t9URhbzYcbdZOEjLJvpFg==,type:str]
+  tls_password: ENC[AES256_GCM,data:YZN+FFqTiH8uMwxHwYBw33wFGs09YEwJS4efP2QDwlE5gIb6XmxVpK+Dg5BD4NmSkqXMMYe0e4Jf5H0rm1kn9MhXBiFo,iv:3oU3UCnZMSpU3gePKtvRf+djTD9IGHPAOkXRoPrFvXc=,tag:1k1PWfUykbmzMWVZrh7gaA==,type:str]
+secret:
+  airbrake_key: ENC[AES256_GCM,data:8sRNRPXvU9mQadk=,iv:Mb0qwzx5kcRzm2fb8ekb/vZqT+/9eg8Y5N+fn7K7CRQ=,tag:Q/RGM8aY9AK84OOJC20UBA==,type:str]
+  secret_token: ENC[AES256_GCM,data:yHAnezi/aJGTKu2uFFROHVAD57Kr1UKJqfhJDWpP4cAmU5M4iLwjLRNkZWiu9Cd+Yog=,iv:pEq2GysJP9H9IW8RhBlB1152z90MLU+puH20xFn68eY=,tag:iB0YCjYmwpU7lqgbua0W3Q==,type:str]
+  session_store: ENC[AES256_GCM,data:wvujhU5tLZdHK5k=,iv:f/FQDNonPSxz98Gnd2Kw/VyJKopJ0epe9R6TiXwYxbQ=,tag:1W4Fgvm5JNrGX8QX9JHVxg==,type:str]
+  encryption:
+    integration_oauth_account: ENC[AES256_GCM,data:C8T8CPUKAhu73/Ej5P7DOK/Tj+aXRelHcBKrTYVnhsyR6ZIpAhNeMuOUIE5VJhCU,iv:8vSIY4O2uWbfc8ZuFqYEroG1wiGjVe5oa0VJSjHhbtI=,tag:tCghYBCfUDHygQpSdw2tmg==,type:str]
+    integration_account: ENC[AES256_GCM,data:CTdIGobXaBbYWrkyv9UgTjo0Jjal9Jd5C4QoPazJ5JzStVinobO+fLFI,iv:0/ywzWE9UByXz4Rz3OWNlrVd/W2+t8HdS9h/uB8HfZs=,tag:ZWtYZAcPvgFGF465NISNfg==,type:str]
+    aws_account: ENC[AES256_GCM,data:8OrrT9I4Sk++8X59nKP7vkwxKJRIwZfyHPdjcUjamZ1weQ==,iv:jPjOzp83VNKHx7Y3PfnDbU7nXjb3UJRs4PKdjwi13UU=,tag:PFPqIgWOM1HR6i2f4EYTFg==,type:str]
+    azure_partner_center: ENC[AES256_GCM,data:EJB8OnK1XlkhWBCDHXQfbiF+G4mvz9UoTl/0iOon2EU9REJqul0imdbyvQ==,iv:5P3dge0dUslaB3TXswcT6y6xUimbMeQSI/6jfIsf+aU=,tag:SLL+QSGxJB4Mzv/U1ncxWg==,type:str]
+    azure_service_principle: ENC[AES256_GCM,data:UAb6Wo2pgjWCe3cKPPE0QoO+aRru1Ec/VuUB6YSWxsqN+oBQpC5Go457yIK6qQ==,iv:sQwSj3up6CO0sj6J+fVi1EvR20dv1mGavg2B1mf6jhA=,tag:tGTp6POxI4xy51IgwCkbcw==,type:str]
+    azure_enrollment: ENC[AES256_GCM,data:spIurBN795crrRMHOX8psIWPKUZJnB6oC+3KOZMxvqVoSKunykBM,iv:hK3nH6GgXeevpljFdUErDtV2o+T6O2qDZCCKpB8ex4g=,tag:yWizHA7Cq9vwyLWQdCNIlw==,type:str]
+    pmc_account: ENC[AES256_GCM,data:TjeYJUz2QS5PP59+H1lHUqs64XjrlF5nIPBHMMaVC9DTvw==,iv:UaVcwKBUBWY9VxY3KE9c7ayUP2+eIYTR4RK8ZgIB+20=,tag:Z30NCfNhVhDYOVh1A/lK3g==,type:str]
+    puppet_account: ENC[AES256_GCM,data:5zNA2+h90EObzFjpcXVXtrs7Qkw8sYCwf9t3DAPFT1jd8vKPlQ==,iv:hQItG/5MsNjoWJlhLt9E9O90Rutyxg4hO4Kqp0Qoe20=,tag:rdUaNVCJXDcqYXxEb9r3Pg==,type:str]
+    alertlogic_account: ENC[AES256_GCM,data:ani3/t9lCer1v2/c6mdLan+T0MJ4Yr7CMB/egVF7xjiSzVziRhZ6Ono=,iv:9+sK054QnujyTi+5M75nSIeSxrkmBpVwn6/bNjk8GDk=,tag:+6xM9b8quxzI6KCMrpdfMQ==,type:str]
+    datadog_account: ENC[AES256_GCM,data:4t9jbqxS/FeOSFIH+Yd+VpEBwHW7JKfsT2fryIX4rG6fPn1JUrY=,iv:GZ27UOzGiGGQU6B+GF38ee7MNmR9vlVJ0c0yUor+I0A=,tag:qiXwBBDzdqEgIHdTIweWrQ==,type:str]
+    vmware_account: ENC[AES256_GCM,data:jx1ARZW+cD2IEmpvfHSWdXKJ80PWe6yfbVH7TVvbNgujtIMvfw==,iv:yVffFUreF6ZWfL9c0JhyAWTezg/dorLy5rXanfl5+9E=,tag:CNrsODcVw+wNzWnVOvbffw==,type:str]
+    datacenter_account: ENC[AES256_GCM,data:4btmghYwXRArJuEDsxqh6MvmKwjE18QfmOCsXHGomghL6c1toa1xkGI=,iv:lv1CDgozRYWl3xKSxj+X+x/jDfFI5PwRtXtUH9qyiGM=,tag:pL622yaTmuKMxeixll3PIA==,type:str]
+    chef_account: ENC[AES256_GCM,data:8CE2vTVi45DYLU/ibcaQNZXFEfHBwiNRVHETXgsGonWaiTI=,iv:8r1rRoBJhLsPZxGfp7BHaY6iDyJkyohSF2QaKc52IeY=,tag:rEIr4cXB53PQyYrXBmyFYQ==,type:str]
+    gcp_project: ENC[AES256_GCM,data:uZ+Ew7TJocJB4Wc5+B+eYb3Jn/uQFone5gwxYnPNGuqa3g==,iv:qItr9RBpLtTeYxwYH0aUdRYtfqfnhthNg0OE64NIrmc=,tag:ARFEvItKXdkwsdH4BBuu/w==,type:str]
+    oci_key_1: ENC[AES256_GCM,data:ux1j/kF8vLRsk87Vj4OZK0yjE8Q0eQ1lQudZ/K9MY6dHd7nqm5k00mEnGdJETOhQWgyvHX1jIc1hYRcDNH2EXg==,iv:DqlsOn50dqNaHcGg8zxjW4plGUE9rZ6VGAIqc9xAFSI=,tag:eJUl915u/wzlHE4NdGKoLw==,type:str]
+    oci_key_2: ENC[AES256_GCM,data:tTFes3az9BVrSl1N9wLRJbH1o4gD3+QXTSxXakQcSwwPzffZIprugd9sGAKAm1hg3RvdtWOPOwBCczelSoAPrg==,iv:izdJ39yHPxuKg0aZAZJAjIkunOOVEFF+JLAkXCX8ztM=,tag:08e8dfHgYtKWulYFUZJuqg==,type:str]
+    rollbar_token: ENC[AES256_GCM,data:zEommRM=,iv:dOn+lcICWTYvbl5O/2a5j0WP08DGyor6vccXJVZ5bcI=,tag:oo3jvL4ExBAa8Lyg/Robnw==,type:str]
+    rollbar_500_token: ENC[AES256_GCM,data:pR1irGA=,iv:ZWJBMELVW/AY9j5uy7m3IVt/BRBm6YnTyblr5292ayk=,tag:JJrtlR1q3Rw8lk9nTsYN8Q==,type:str]
+    rollbar_proactive_support_token: ENC[AES256_GCM,data:y3JBKIc=,iv:0ZrjaEHNydDle3P6/H4CkM03MszJXTCtQSxiNXW/krA=,tag:kXY1Qh75RkQa5/3uYvYQ7A==,type:str]
+    slack_client_id: ENC[AES256_GCM,data:w6VVOWd30liuARLm6E/Cwm9uG8YcUoo=,iv:kZnQtDsP/63oX/g/Tqyupf1Qu80ATV3kT72SlIjTUcQ=,tag:gBjLIk8ZlK94JVUPpfvepQ==,type:str]
+    slack_client_secret: ENC[AES256_GCM,data:RVoS8vhUUmdb1j+u1Ya4dT3YCkc91OafX/HJXVhK7Q8=,iv:OA1tgvqVyt4rTwu7lGAbl97FPwUybMgvNXz2tLTmOMQ=,tag:L/23RSwfRv85mzhMVYzVHQ==,type:str]
+    slack_verification_token: ENC[AES256_GCM,data:mqQpL2hXqH2lgHSOgCtKxCm6x84tMIqD,iv:uzGbnMw5o/ya8icAFOPZZKIkCHLp6pL+YYnV2QNdWZ0=,tag:TnbSiP9p1VQhmwtS9zZyzA==,type:str]
+    aria_key: ENC[AES256_GCM,data:XTYuANAQdfGGrCunzmf5ZElwuBjJg2sAW8OKAXxAJzw=,iv:C2o1JC8sEv+IaakSZBv04Hj4dDxnKvVree3xRkxubEg=,tag:iI3rllghtfQITljCKPtKEA==,type:str]
+    auth0_token: ENC[AES256_GCM,data:dTuox+/ww2d0m49C0h9Vo93NBXhRQxCfaqG9zKR+ai1Rqp8l/IQ+IIR51lW9c0d6UTkVpwZUD2k/riYfylWbEM8PcHcGNlCPSvtK5a9/5lMTYyRrJPxqAdrK0YMnQ/nBb53Vw4H5naiMayzYOb371w4/9PDlh3HUkOYcDjOFbPh1L9acPEldPOJPK/11ixJQsNs1Uv+zrjFCIvtFYuZc9YV1T13TFC4ZIkrJrSNDa36zi2Hy5viwzjHiEO8jNYPecrnaNL42KzSnl1S3N8975IdmLLMBRqDUkBgLMVzMbqb0m6vOYw+X6lsDkmzfvWRorgwwXZaOekGBIsXAu4sL45gD38+Kkg7EzO+DunLp6P5fIVb2uN4VabPE89xZtfqNYR9rs2XCoNKiEnRrJC30yt+S8nOeBkVpxv8W4Z3CIZfDPq/A5V9HfY27gJDDOcWnJoUbOA+xH7cDqvFJd7eL,iv:a43MGMIH0QIg/MoloasHD5YE3ImNsJCqb5UTrl6zbSY=,tag:nXN3Lj02AIxn7219jzEQRA==,type:str]
+oanda:
+  access_key: ENC[AES256_GCM,data:jPPeRXE=,iv:zAas2x732SEZ7GlERJvP3y5diB8OVktIJLEtFm9usDY=,tag:xCFioBSN5/TWqLB6rkcnug==,type:str]
+  base_url: ENC[AES256_GCM,data:6tf+cnc=,iv:ZJpQqwmFspO5Tf6r4wRdzy3yFOuwn5nXq+IWcuLwaE8=,tag:PzGVP5mxPbY2fmmGRl96qA==,type:str]
+slack:
+  api_token: ""
+  azure_api_token: ""
+rabbit_mq:
+  rabbit_username: ENC[AES256_GCM,data:s1AC1Og5GZLSk9S4KXX8+Ke1r4yKTOFMXG2kT8t7TBs=,iv:eh/IFeLm+p+GIBFKtL0hWS/YD8E4n544r0kWsjjSs5E=,tag:MSj43so/xYrWT6+hP7rSEQ==,type:str]
+  rabbit_password: ENC[AES256_GCM,data:k9OnxanqlELq2sXfTHNvRafdBXTeBwVj/SrLKK4V+J0=,iv:YYJUwYLzJXomDBcQ6bdUaJhqmbEIlmj6d/HJ9ErtmHs=,tag:aFvDRZe1wtxZ+IRTspxrhA==,type:str]
+  cube_rabbit_username: ENC[AES256_GCM,data:opNwpg7IM0UjIJXEtiB7WaFlDse9fKhxPyTznXKaMQk=,iv:xGWcyg6WRV9YlrwWC/mX60FhUW/aSTw3ckV1p05UWX0=,tag:oKvBBb7u7XY4cuGHxx5RSg==,type:str]
+  cube_rabbit_password: ENC[AES256_GCM,data:WmYSL/WHK0Od6Ax7Yz6MEaD2xmcn/Bjg8h/aZJtqcA8=,iv:Hj5jh82WSMA9XIeDJGSMpEq+0Q/D2AnRBrZpvs9retI=,tag:X/RIni9uKJP/9nGimNcxcQ==,type:str]
+  metric_rabbit_username: ENC[AES256_GCM,data:FBLQZ7fu0OKsIaXiTG+lFkMQ64B42IZ9FluljMQVVIk=,iv:qVl9l9I3uiRU3vNBIF/VMz3XrMTs5yISEA2V5mdR81A=,tag:w+q/To9l6CDM5rk9g/0SGg==,type:str]
+  metric_rabbit_password: ENC[AES256_GCM,data:JaiEu8v4QDAYe9/flZVpHtYG/+ECq/Nl5JLFF6iHmK0=,iv:BthyDf6F/Prmc+HX1LbT/aujeINNJzqmNQn/uHvEOLI=,tag:ZC7uJzw4iyzO0yx2/5tmZA==,type:str]
+  superasterisk_rabbit_username: ENC[AES256_GCM,data:qBh6y4GC/qmfShpDopqKz50l9yL2T4HRP8Y6YyKegc4=,iv:BWAbC9uc5S6vIXYv+I/P4AL94fuxt5vvC9l+yPMG5ko=,tag:WtfpYmWHjfYXKhdG8cMx5A==,type:str]
+  superasterisk_rabbit_password: ENC[AES25

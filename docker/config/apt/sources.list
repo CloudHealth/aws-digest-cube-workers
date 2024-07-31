@@ -1,0 +1,6 @@
+deb https://artifactory.mgmt.cloudhealthtech.com/artifactory/ubuntu-main trusty main restricted universe multiverse
+deb https://artifactory.mgmt.cloudhealthtech.com/artifactory/ubuntu-main trusty-updates main restricted universe multiverse
+deb https://artifactory.mgmt.cloudhealthtech.com/artifactory/ubuntu-main trusty-backports main restricted universe multiverse
+deb https://artifactory.mgmt.cloudhealthtech.com/artifactory/ubuntu-security trusty-security main restricted universe multiverse
+
+deb https://artifactory.mgmt.cloudhealthtech.com/artifactory/nodesource-7x trusty main

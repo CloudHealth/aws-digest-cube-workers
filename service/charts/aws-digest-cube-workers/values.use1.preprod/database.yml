@@ -1,0 +1,32 @@
+production:
+  adapter: mysql2
+  host: db.use2.preprod.test.cloudhealthtech.com
+  database: cloudpercept
+  username: {{ .Values.database.username }}
+  password: {{ .Values.database.password }}
+  pool: 10
+  reconnect: true
+  checkout_timeout: 5
+  wait_timeout: 300
+  multidb:
+    fallback: false
+    databases:
+      master:
+        host: db.use2.preprod.test.cloudhealthtech.com
+        database: cloudpercept
+
+      db1:
+        host: db.use2.preprod.test.cloudhealthtech.com
+        database: cloudpercept
+        alias: master
+      db2:
+        host: db.use2.preprod.test.cloudhealthtech.com
+        database: cloudpercept2
+
+      db3:
+        host: db.use2.preprod.test.cloudhealthtech.com
+        database: cloudpercept3
+
+      read1:
+        host: db1.read.use2.preprod.test.cloudhealthtech.com
+        database: cloudpercept

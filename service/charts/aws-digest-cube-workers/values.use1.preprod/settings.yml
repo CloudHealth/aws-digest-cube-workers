@@ -1,0 +1,415 @@
+---
+s3:
+  local-path: "/tmpa/chealth/s3_billing"
+  chealth-s3-access-id: {{ .Values.aws_keys.chealth_s3_access_id }}
+  chealth-s3-secret-key: {{ .Values.aws_keys.chealth_s3_secret_key }}
+  chealth-s3-bucket: cloudhealth-detailed-bills-dev
+  billing_bucket: cloudhealth-detailed-bills-aws-use1-preprod-verify
+  billing_bucket_dev: cloudhealth-detailed-bills-use1-preprod-verify
+  analysis_bucket: cht-analysis-use1-preprod-verify
+  inventory_bucket: cloudhealth-inventory-use2-preprod-test
+  groups_bucket: group-membership-use2-preprod-test
+  backup_bucket: cloudhealth-database-backups-use2-preprod-test
+  cheddar_bucket: cht-cheddar-config-use2-preprod-test
+  database_dump_bucket: cloudhealth-database-dump-use2-preprod-test
+  export_bucket: cht-export-use2-preprod-test
+  dbr_bucket: cloudpercept-aws-billing-use2-preprod-test
+  dev_bucket: cht-dev-use2-preprod-test
+  cloudtrail_bucket: cht-cloudtrail-use2-preprod-test
+  pricing_update_bucket: cloudhealth-pricing-update-use2-preprod-test
+  perspectives_bucket: cht-perspectives-use2-preprod-test
+  collector_bucket: remote-collector
+  ri_history_bucket: ri-mod-history-use2-preprod-test
+  assets_bucket: cloudhealth-assets-use2-preprod-test
+  es_backup_bucket: cht-es-backup-use2-preprod-test
+  spark_rat_bucket: cht-cur-emr-temp-use2-preprod-test
+  cht_rat_bucket: cht-rat-use2-preprod-test
+  cur_rat_jar_bucket: cht-cur-use2-preprod-test
+  cht_integration_jira_bucket: cht-integration-jira-use2-preprod-test
+  remote_collector_logs_bucket: remote-collector-logs-use2-preprod-test
+  cost_engine_bucket: cht-cost-engine-use2-preprod-test
+  s3_cache_bucket: cht-s3-cache-use1-preprod-verify
+  analysis_20_bucket: cht-analysis-20-use1-preprod-verify
+  ou_version_bucket: cht-ou-versioned-artifacts-use2-preprod-test
+  quicksearch_bucket: cloudhealth-quicksearch-use2-preprod-test
+  ginv_bucket: cht-faster-cubes-use1-preprod-verify
+  cht_policy_alert_eval_record_bucket: cht-policy-alert-eval-record-use2-preprod-test
+  super_artifacts_bucket: cht-superartifacts-use1-preprod-verify
+  superxform_gen_analysis_artifacts: cht-faster-cubes-use1-preprod-verify
+  cht_svc_object_meta: cht-svc-object-meta-use2-preprod-test
+  ou_digest_bucket: cht-ou-bills-use1-preprod-verify
+  ou_bills_bucket: cht-ou-bills-use1-preprod-verify
+  spark_cubes_bucket: cht-spark-cubes-use2-preprod-test
+  gcp_bucket: cht-gcp-use1-preprod-verify
+  super_ird_bucket: super-ird-use1-preprod-verify
+  super_ird_parquet_bucket: super-ird-parquet-use1-preprod-verify
+  super_ird_parquet_oci_bucket: cht-integration-oci-use2-preprod-test
+  ws3_super_ird_parquet_bucket: cht-faster-cubes-use1-preprod-verify
+  sso_proof: sso-proof-use2-preprod-test
+  tag_collector_logs_bucket: cht-tag-collector-logs-use2-preprod-test
+  oci_cube_bucket: cht-integration-oci-use2-preprod-test
+  oci_cube_prefix: oci
+  bizops_invoice_original_cost_bucket: bizops-invoice-original-cost-use2-preprod-test
+  bizops_invoice_transformed_cost_bucket: bizops-invoice-transformed-cost-use2-preprod-test
+  parquet_perspectives_bucket: cht-parquet-perspectives-use2-preprod-test
+  ccli_bucket: cht-financial-management-use1-preprod-verify
+  cube_compare: cht-faster-cubes-use1-preprod-verify
+  rightsizing_bucket: cht-svc-rightsizing-framework-use2-preprod-test
+  rightsizing_out_bucket: cht-faster-cubes-use1-preprod-verify
+  esr_input_bucket: cht-superartifacts-use1-preprod-verify
+  esr_output_bucket: cht-analysis-20-use1-preprod-verify
+  usage_bucket: cht-containers-store-us1-prod-use1-preprod-verify
+  bill_pipeline_monitoring_bucket: cht-bill-pipeline-monitoring-use2-preprod-test
+  containers_cost_bucket: cht-containers-data-use1-preprod-verify
+  recommendation_bucket: cht-recommendations-use2-preprod-test
+  super_digest_bucket: cht-faster-cubes-use1-preprod-verify
+  cht_container_cube_bucket: cht-containers-cubes-use2-preprod-test
+  dimension_tag_bucket: cht-faster-cubes-use1-preprod-verify
+  green_ops_bucket: cht-svc-greenops-use2-preprod-test
+  alicloud_cost_history_parquet_bucket: cht-faster-cubes-use1-preprod-verify
+  alicloud_asset_parquet_bucket: cht-faster-cubes-use1-preprod-verify
+  asset_lifetime_validation_bucket: cht-faster-cubes-use1-preprod-verify
+  cost_management_bucket: cht-azure-bills-use2-preprod-test
+  partner_xform_bucket: cht-partner-xform-use1-preprod-verify
+  sp_allocation_bucket: cht-sp-allocation-use2-preprod-test
+  cht_faster_cubes_bucket: cht-faster-cubes-use1-preprod-verify
+  enhanced_billing_bucket: cloudhealth-enhanced-detailed-bills-use2-preprod-test
+  shadow_billing_bucket: cloudhealth-shadow-detailed-bills-use2-preprod-test
+  supergen_assetid_bucket: cht-svc-superartifact-asset-cache-creator-use1-preprod-verify
+  superartifact_asset_cache_creator_bucket: cht-svc-superartifact-asset-cache-creator-use1-preprod-verify
+  savings_management_bucket: cht-savings-management-use2-preprod-test
+  athena_query_results_bucket_ng: aws-athena-query-results-use2-preprod-test
+aws:
+  wr_access_key_id: {{ .Values.aws_keys.wr_access_key_id }}
+  wr_secret_access_key: {{ .Values.aws_keys.wr_secret_access_key }}
+  ro_access_key_id: {{ .Values.aws_keys.ro_access_key_id }}
+  ro_secret_access_key: {{ .Values.aws_keys.ro_secret_access_key }}
+  snapshot_access_key_id: {{ .Values.aws_keys.snapshot_access_key_id }}
+  snapshot_secret_access_key: {{ .Values.aws_keys.snapshot_secret_access_key }}
+  readonly_access_key_id: {{ .Values.aws_keys.readonly_access_key_id }}
+  readonly_secret_access_key: {{ .Values.aws_keys.readonly_secret_access_key }}
+  export_access_key_id: {{ .Values.aws_keys.export_access_key_id }}
+  export_secret_access_key: {{ .Values.aws_keys.export_secret_access_key }}
+  backup_access_key_id: {{ .Values.aws_keys.backup_access_key_id }}
+  backup_secret_access_key: {{ .Values.aws_keys.backup_secret_access_key }}
+  druid_access_key_id: {{ .Values.aws_keys.druid_access_key_id }}
+  druid_secret_access_key: {{ .Values.aws_keys.druid_secret_access_key }}
+  emr_access_key_id: {{ .Values.aws_keys.emr_access_key_id }}
+  emr_secret_access_key: {{ .Values.aws_keys.emr_secret_access_key }}
+  region: us-east-2
+  sns_topic: arn:aws:sns:us-east-2:924758434213:cht-jeff-1-default-alarms-use2-preprod-test
+  recommendation_sqs_url: https://sqs.us-east-2.amazonaws.com/924758434213/reservation_recommendation_work_queue_use2_preprod_test.fifo
+  govcloud_region: us-gov-west-1
+azure:
+  cpv_client_id: {{ .Values.azure.cpv_client_id }}
+  cpv_secret_key: {{ .Values.azure.cpv_secret_key }}
+mailer:
+  user_name: {{ .Values.mailer.user_name }}
+  password: {{ .Values.mailer.password }}
+  tls_user_name: {{ .Values.mailer.tls_user_name }}
+  tls_password: {{ .Values.mailer.tls_password }}
+  athena_cross_account_arn: arn:aws:iam::924758434213:role/athena-crossaccount-use2-preprod-test
+secret:
+  secret_token: {{ .Values.secret.secret_token }}
+  session_store: {{ .Values.secret.session_store }}
+  encryption:
+    integration_oauth_account: {{ .Values.secret.encryption.integration_oauth_account }}
+    integration_account: {{ .Values.secret.encryption.integration_account }}
+    aws_account: {{ .Values.secret.encryption.aws_account }}
+    azure_partner_center: {{ .Values.secret.encryption.azure_partner_center }}
+    azure_service_principle: {{ .Values.secret.encryption.azure_service_principle }}
+    azure_enrollment: {{ .Values.secret.encryption.azure_enrollment }}
+    pmc_account: {{ .Values.secret.encryption.pmc_account }}
+    puppet_account: {{ .Values.secret.encryption.puppet_account }}
+    alertlogic_account: {{ .Values.secret.encryption.alertlogic_account }}
+    datadog_account: {{ .Values.secret.encryption.datadog_account }}
+    vmware_account: {{ .Values.secret.encryption.vmware_account }}
+    datacenter_account: {{ .Values.secret.encryption.datacenter_account }}
+    chef_account: {{ .Values.secret.encryption.chef_account }}
+    gcp_project: {{ .Values.secret.encryption.gcp_project }}
+    oci_key_1: {{ .Values.secret.encryption.oci_key_1 }}
+    oci_key_2: {{ .Values.secret.encryption.oci_key_2 }}
+  rollbar_token: {{ .Values.secret.encryption.rollbar_token }}
+  rollbar_500_token: {{ .Values.secret.encryption.rollbar_500_token }}
+  rollbar_proactive_support_token: {{ .Values.secret.encryption.rollbar_proactive_support_token }}
+  slack_client_id: {{ .Values.secret.encryption.slack_client_id }}
+  slack_client_secret: {{ .Values.secret.encryption.slack_client_secret }}
+  slack_verification_token: {{ .Values.secret.encryption.slack_verification_token }}
+  aria_key: {{ .Values.secret.encryption.aria_key }}
+  auth0_token: {{ .Values.secret.encryption.auth0_token }}
+
+services:
+  clusters_api: http://internal-container-cube-service-use2-1757247821.us-east-2.elb.amazonaws.com:9292/api/v1
+  es_domain_name: preprod.test.cloudhealthtech.com
+query_monitor:
+  enabled: false
+  sample_rate: 0.01
+rollbar:
+  rollbar_environment: preprod
+  rollbar_server_side_default: 0f280edfefcf4048b91f17910d939dd1
+  rollbar_teams:
+    abracadata: 21842393fc024662a440fac7c537ae65
+    alphabet: c3607097c2964c699ce3073e253be393
+    amazonprime: 29079f8d028a41a188dc7c0b6ba5ad07
+    devops: 752fe694af1047208aac236dd8f81522
+    grit: d18c0f78d6324714bc21ea983c904ab6
+    indigomontoya: 45c91ae8a4a34fa88de528028b0bef70
+    jaws: dfaa034ac6d1492db6dd28e6b1013841
+    matrix: 00d1a782146e46df94d17a99dfbfb460
+    partnerds: 47c3f62f06a3496681b19fa5390ef9c3
+    platform9.75: 63231b1f583444d984040b2c79012c82
+    platformng: 4a770ce7e49b4b1fa51412dae2bd78c2
+    quality: 01ed034487e649199ca65d0143282eb7
+    superstar: 664e02df08f64b94a3004c65f47e3438
+    tactical: eeaaaec2ece14a6087228076126b7a35
+    rollbar_cp_workers: 0f280edfefcf4048b91f17910d939dd1
+    qrf: '08066ae8de0f46f8b806fa06be2c5343'
+    enterprise: 0a6f0817781247df9a8c626de169d0d8
+    mates: 0fdebe080dcc4ec5b2b2a30d5a943553
+    northstar: 73319118a8d6476db5f47f12f59be035
+    sudo: 33bcdad6689f4fbc9fc99597269b9d0d
+    titans: 0c9deea7e0ad433d84f2aa354c9ba719
+    remote_collector: 1ae31da356c9450f90e380e2d52e479e
+    yukti: 831e2973c5ac40828a1589326a37dd3b
+    cht_oci: f942cc5bebef4a9d8ec978869a584ea7
+    cht-svc-pricing: 4017287c36ab475b8463e4a19fe92e97
+    nebula: 21292cf2a4724605be8b101e65de965a
+    galaxy: 33a26892ec014d8ba099731e9ecf58ed
+    cosmos: e59d2e7d4b4b4146b0b5acb322b888a8
+    optimus: dc91b9fb3e2941dc98e34360452f784f
+    ninjas: 9d50709ba7ed4892851de9cfb78e7eb8
+    polaris: c3607097c2964c699ce3073e253be393
+    containers: 26b4c266cda24a49a5389424aef098d0
+    cht-svc-cqs-adapter: 9ef5433658c34ca7aa5cd1920eb69aaa
+cur_coordinator:
+  emr_customer_id: {{ .Values.cur_coordinator.emr_customer_id }}
+  emr_aws_account_id: {{ .Values.cur_coordinator.emr_aws_account_id }}
+  emr_aws_region: us-east-2
+  cur_rat_jar: CUR2RAT-assembly-0.9-614d6f3.jar
+  cur_rat_jar_prefix: jars
+  cur_rat_ri_cache_base: s3://cloudhealth-inventory-use2-preprod-test/ri_cache
+  emr_cluster_id: j-G8XH4UY6MJBF
+oanda:
+  access_key: {{ .Values.oanda.access_key }}
+  base_url: {{ .Values.oanda.base_url }}
+aws_account_status:
+  base_url: https://internal.use2.preprod.test.cloudhealthtech.com/aws-account-status/graphql
+  port: 443
+  connect_timeout: 5
+  read_timeout: 0.5
+cht_svc_credentials:
+  base_url: https://internal.use2.preprod.test.cloudhealthtech.com/credentials/graphql
+  port: 443
+cht_svc_pricing:
+  url: https://internal.use2.preprod.test.cloudhealthtech.com/pricing
+cht_integration_aws:
+  base_url: https://internal.use2.preprod.test.cloudhealthtech.com/aws/assetcp/graphql
+  port: 443
+cht_svc_rightsizing:
+  url: https://internal.use2.preprod.test.cloudhealthtech.com/rightsizing
+eds:
+  cas_base_url: http://vpce-08bcc58771dcc58d6-kmr6gzjo.vpce-svc-0251c51a753242d92.us-east-1.vpce.amazonaws.com/api/
+  cas_elb_url: http://a92cf2540039e4b20ac3e3034516e17e-d87a93e5d6c0dfaf.elb.us-east-1.amazonaws.com/api/
+aria_hub:
+  gateway_url: http://be.aria-private.symphony-dev.com:4000/ensemble/graphql
+aria_cost:
+  token_service_url: https://internal.use2.preprod.test.cloudhealthtech.com/csp-token-cache
+redis:
+  main:
+    database: 0
+    primary:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+    replica:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+  reports:
+    database: 0
+    primary:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+    replica:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+  web:
+    database: 0
+    primary:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+    replica:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+  activity_feeds:
+    database: 0
+    primary:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+    replica:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+  pulse_reports:
+    database: 0
+    primary:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+    replica:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+  ri_tools:
+    database: 0
+    primary:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+    replica:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+  partnerds:
+    database: 0
+    primary:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+    replica:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+  atlas:
+    database: 0
+    primary:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+    replica:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+  organizations:
+    database: 0
+    primary:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+    replica:
+      host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+      port: 6379
+kafka:
+  ui_session_activity_topic: com.cloudhealthtech.svc.ui_session.activity
+  proxy: http://kafka.use2.preprod.test.cloudhealthtech.com
+  api_status_topic: com.cloudhealthtech.cp.collection.api_status
+  tag_collector_topic: com.cloudhealthtech.cp.collection.aws.tags
+  cost_engine_pricing_topic: com.cloudhealthtech.svc.vmw_costing.raw_asset
+  ee_org_bounds_topic: com.cloudhealthtech.svc.org_management.recompute_org_bounds
+  ee_recreate_classifier_perspective_topic: com.cloudhealthtech.svc.perspective_management.recreate_classifier_perspective
+  cht_svc_superartifacts_topic: com.cloudhealthtech.cache.superartifacts
+  cht_svc_cube_save_dataset_topic: com.cloudhealthtech.svc.cube.save_dataset
+  cht_svc_superdigester_save_dataset_topic: com.cloudhealthtech.svc.superdigester.save_dataset
+  org_change_topic: com.cloudhealthtech.svc.organizations.change
+  user_change_topic: com.cloudhealthtech.svc.user_management.users.change
+  customer_change_topic: com.cloudhealthtech.svc.tenant.change
+  ou_bound_asset_cache_export_topic: com.cloudhealthtech.cache.asset_export.ou_split
+  data_provenance_topic: com.cloudhealthtech.svc.data_provenance.manifest
+  flexorg_backfill_topic: com.cloudhealthtech.svc.flexorg.backfill
+  organization_list_change_topic: com.cloudhealthtech.svc.organizations.organizationlist.change
+  reports_usage_analytics_topic: com.cloudhealthtech.svc.report.usage.analytics
+  cqs_ee_cache_warming_topic: com.cloudhealthtech.svc.cqs.ee.cache.warming
+  account_assignment_change_topic: com.cloudhealthtech.svc.organizations.accountassignment.change
+  parquet_perspectives_topic: com.cloudhealthtech.svc.perspective_management.parquet.export
+  parquet_perspectives_stealth_topic: com.cloudhealthtech.svc.perspective_management.parquet.export.stealth
+  account_management_topic: com.cloudhealthtech.svc.data_connect.account_management
+  test_topic: com.cloudhealth.cloudpercept.test_topic
+  host: kafka.use2.preprod.test.cloudhealthtech.com:9092
+  saved_reports_management_topic: com.cloudhealthtech.svc.saved_reports.management
+  cost_allocation_rule_change_topic: com.cloudhealthtech.cost-allocation.rule-change
+  superartifact_ready_events_topic: com.cloudhealthtech.superartifact-ready.events
+  cost_allocation_dataset_update: com.cloudhealthtech.svc.cost-allocation.dataset-update
+  flexreports_ingestion_events_topic: com.cloudhealthtech.svc.queuemr.flexreports-ingestion-events
+  saved_reports_sync_check_topic: com.cloudhealthtech.svc.saved_reports.synccheck
+  delete_webhooks_topic: com.cloudhealthtech.svc.notification.deleted.webhooks
+  notification_delivery_status_topic: com.cloudhealthtech.svc.notification.delivery.status
+  partner_bill_generation_status_topic: com.cloudhealthtech.svc.partner_bill_status.partner_bill_generation_status_event
+  delete_partner_bill_generation_status_topic: com.cloudhealthtech.svc.partner_bill_status.delete_partner_bill_generation_status_event
+  msp_client_account_cost_status_topic: com.cloudhealthtech.svc.partner_bill_status.msp_client_account_cost_status_event
+  dataset_catalogue_ingestion_topic: com.cloudhealthtech.svc.dataset.catalogue.ingestion
+  perspective_management_dataset_update: com.cloudhealthtech.svc.perspective-management.dataset-update
+azure:
+  cpv_client_id: DUMMY
+  cpv_secret_key: DUMMY
+aws_environment: production
+
+slack:
+  api_token: {{ .Values.slack.api_token }}
+  azure_api_token: {{ .Values.slack.azure_api_token }}
+pagerduty:
+  matrix_integration_key:
+cube_query_server:
+  cube_ready: https://internal.use2.preprod.test.cloudhealthtech.com/cube-query/cqs/cube_ready
+  cqs: https://internal.use2.preprod.test.cloudhealthtech.com/cube-query/cqs/cube_query
+  cqs_adapter: https://internal.use2.preprod.test.cloudhealthtech.com/cqs-adapter/cube-query
+  vlc: https://internal.use2.preprod.test.cloudhealthtech.com/cube-query/vlc/cube_query
+  ee: https://internal.use2.preprod.test.cloudhealthtech.com/cube-query/ee/cube_query
+  ee_vlc: https://internal.use2.preprod.test.cloudhealthtech.com/cube-query/ee-vlc/cube_query
+  blacklist: https://internal.use2.preprod.test.cloudhealthtech.com/cube-query/blacklist/cube_query
+  containers: http://internal-container-cube-service-use2-1757247821.us-east-2.elb.amazonaws.com:9292/cube_query
+clean_shutdown_marker:
+
+partner_health_check:
+  host: redis-verifystandalone-primary.vmwcht-operators.cht.svchtg1.vmw.saas.broadcom.net
+  port: 6379
+
+apportioning:
+  bucket: cloudhealth-detailed-bills-use2-preprod-test
+  prefix: markers
+  access_key_id: {{ .Values.aws_keys.apportioning.access_key_id }}
+  secret_access_key: {{ .Values.aws_keys.apportioning.secret_access_key }}
+cubes:
+  jruby:
+    timeout: 90
+super_preprocess:
+  service_account:
+    crn: crn::service-account/super-preprocess
+    key: 00000000-0000-0000-0000-000000000000
+classic_pgb:
+  service_account:
+    crn: crn::service-account/classic-pgb
+    key: 00000000-0000-0000-0000-000000000000
+ng:
+  connect_timeout: 2
+  read_timeout: 10
+  write_timeout: 5
+ng_client:
+  default_cluster: v
+  fallback_cluster: v
+  domain: https://preprod.test.cloudhealthtech.com
+  service_account:
+    crn: crn::service-account/cloudpercept
+    key: 7c48f954-350b-4687-9ecc-398d95aae70d
+  clusters:
+    v:
+      cht_svc_credentials:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/credentials/graphql
+      cht_integration_aws:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/aws/assetcp/graphql
+      cht_svc_rightsizing:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/rightsizing
+      cht_svc_local_auth:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/token-provider
+      cht_svc_ui_session:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/ui-session
+      ng_api_proxy:
+        url: https://use2.preprod.test.cloudhealthtech.com/graphql
+      ng_api_router:
+        url:
+      cht_svc_authorization:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/authorization
+      user_management_update:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/updateUserIdp
+      cht_svc_budget:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/budget
+      ng_data_provenance:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/data-provenance
+      ng_dataset_catalogue:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/dataset-catalogue
+      cht_svc_pricing:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/pricing
+      cht_svc_authn:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/authn/graphql
+      cht_svc_currency:
+        url: https://internal.use2.preprod.test.cloudhealthtech.com/currency
+
+deployment:
+  provider: gcp

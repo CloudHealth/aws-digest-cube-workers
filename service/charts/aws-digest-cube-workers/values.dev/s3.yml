@@ -1,0 +1,23 @@
+development:
+  local-path: /tmpa/chealth/s3_billing
+  chealth_s3_access_id: "{{ .Values.aws_keys.chealth_s3_access_id }}"
+  chealth_s3_secret_key: "{{ .Values.aws_keys.chealth_s3_secret_key }}"
+  chealth-s3-bucket: cloudhealth-detailed-bills-dev
+
+test:
+  local-path: /tmpa/chealth/s3_billing
+  chealth_s3_access_id: "{{ .Values.aws_keys.chealth_s3_access_id }}"
+  chealth_s3_secret_key: "{{ .Values.aws_keys.chealth_s3_secret_key }}"
+  chealth-s3-bucket: cloudhealth-detailed-bills-dev
+
+production:
+  local-path: /tmpa/chealth/s3_billing
+  chealth_s3_access_id: "{{ .Values.aws_keys.chealth_s3_access_id }}"
+  chealth_s3_secret_key: "{{ .Values.aws_keys.chealth_s3_secret_key }}"
+  chealth-s3-bucket: cloudhealth-detailed-bills
+
+vagrant:
+  local-path: /tmpa/chealth/s3_billing
+  chealth_s3_access_id: "{{ .Values.aws_keys.chealth_s3_access_id }}"
+  chealth_s3_secret_key: "{{ .Values.aws_keys.chealth_s3_secret_key }}"
+  chealth-s3-bucket: cloudhealth-detailed-bills-dev

@@ -1,0 +1,12 @@
+service_id: aws-digest-cube-workers
+service_name: aws-digest-cube-workers
+version: 0.0.1
+charts:
+  - name: aws-digest-cube-workers
+    release_name: aws-digest-cube-workers
+    default_namespace: aws-digest-cube-workers
+    docker_images:
+      - image_name: cht/services/cp-workers
+        dockerfile: cp-workers.dockerfile
+        helm_image_variable: cp-workers.image
+        helm_image_tag_variable: tag

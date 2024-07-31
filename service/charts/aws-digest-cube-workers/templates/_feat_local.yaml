@@ -1,0 +1,38 @@
+{{/* Service-local settings.
+
+After editing this file, run
+
+~/src/cht-ng/cht-helm-common/bootstrap.sh
+
+to regenerate the values.yaml file and anything else you change.
+
+https://github.com/CloudHealth/cht-helm-common/blob/develop/doc/REFERENCE.md
+has a listing of the things you can control here.
+
+*/}}
+
+{{/* The set of parts this file provides.  Each of these corresponds
+to a "cht.*.local" template later in the file. */}}
+{{- define "cht.parts.local" -}}
+podspec
+{{- end -}}
+
+{{- define "cht.podspec.local" -}}
+{{ if .Values.gkeNodePoolSelector.enabled -}}
+  # GKE Node affinity rule
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: {{ .Values.gkeNodePoolSelector.labelKey }}
+              operator: In
+              values:
+                - vmwcht-green
+tolerations:
+  - key: dedicated
+    operator: "Equal"
+    value: cloudhealth
+    effect: NoSchedule
+{{ end -}}
+{{ end -}}
