@@ -1,0 +1,5 @@
+dependencies:
+  - name: cht
+    version: "^5.14"
+    repository: "https://artifactory.mgmt.cloudhealthtech.com/artifactory/helm-virtual"
+

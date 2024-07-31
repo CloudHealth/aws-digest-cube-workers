@@ -1,0 +1,21 @@
+# THIS IS SIMPLY A REFERENCE FOR WHICH BUCKETS EXIST IN PRODUCTION
+# DEVOPS NEEDS TO ADD/CHANGE/DELETE ANY BUCKETS ON PRODUCTION
+# YOU MUST TALK WITH DEVOPS BEFORE DEPLOYING A RELATED CHANGE
+
+transport_limit: 100000000
+
+# how many groups we can have total saved - includes groups in dynamic blocks
+max_groups: 100
+
+# how many groups we can display in a discovery categorization
+max_display_categories: 200
+
+es_nodes:
+  - 'localhost'
+
+
+index_ngram_min: 2
+index_ngram_max: 12
+index_ngram_type: 'edgeNGram'
+
+cht_plugin_version: 19

@@ -1,0 +1,60 @@
+queues:
+  cube_compare:
+    connection: cubes
+    execution_timeout: 172800
+  cubeprime_cube:
+    connection: superasterisk
+  cubeprime_vlc_cube:
+    connection: superasterisk
+  cubeprime_slc_cube:
+    connection: superasterisk
+    execution_timeout: 172800
+  cube_mri:
+    connection: cubes
+    concurrency: 8
+  cube_mri_spot:
+    connection: cubes
+    concurrency: 8
+  cube_mri_spot_experimental:
+    connection: cubes
+    concurrency: 8
+  cube_mri_spot_intermediary:
+    connection: cubes
+    concurrency: 8
+  jruby_cube_slc:
+    connection: cubes
+    exec_timeout_env: jruby
+  jruby_cube_ulc:
+    connection: cubes
+    exec_timeout_env: jruby
+  azure_cube_vlc:
+    connection: cubes
+    # Give Azure VLC cube 3 days to execute
+    execution_timeout: 259200
+  azure_jruby_cube:
+    connection: cubes
+    exec_timeout_env: jruby
+  chd_mda_generator:
+    connection: superasterisk
+  chd_mda_generator_vlc:
+    connection: superasterisk
+  chd_mda_generator_slc:
+    connection: superasterisk
+  chd_mda_generator_ee:
+    connection: superasterisk
+  chd_mda_generator_azure:
+    connection: superasterisk
+
+connections:
+  cubes:
+    host: cube_rabbit_host
+    port: cube_rabbit_port
+    username: {{ .Values.queues.cubes.username }}
+    password:  {{.Values.queues.cubes.password }}
+    # config_file: rabbitmq-cubes.yml  #needed when establishing connection from rails
+  superasterisk:
+    host: superasterisk_rabbit_host
+    port: cube_rabbit_port
+    username: {{ .Values.queues.superasterisk.username }}
+    password: {{ .Values.queues.superasterisk.username }}
+    # config_file: rabbitmq-superasterisk.yml #needed when establishing connection from rails

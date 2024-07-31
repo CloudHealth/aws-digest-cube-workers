@@ -1,0 +1,16 @@
+{
+  "122" : { "msp_customer_id" : 122,
+    "end_users" : [
+      {
+        "end_user_customer_name" : "SHI - Texas DSHS",
+        "end_user_customer_id" : 292,
+        "account" : {
+          "id" : 309,
+          "billing_bucket" : "msp_bills_test",
+          "mapped_owner_id" : "146708650527",
+          "linked_account_ids" : [ 403 ]
+        }
+      }
+    ]
+  }
+}

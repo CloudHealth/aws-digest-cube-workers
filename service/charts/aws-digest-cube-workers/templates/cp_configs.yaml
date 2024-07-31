@@ -1,0 +1,36 @@
+  {{ range $i, $cp := .Values.cp.cubeList }}
+  {{- with $ }}
+---
+apiVersion: v1
+data:
+  server.json: {{ tpl (.Files.Get  (printf "values.%s/server.json/%s.json" .Values.environment $cp.cubeType) ) . | b64enc }}
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ .Release.Service }}
+    helm.sh/chart: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  name: "{{ .Release.Name }}-{{ $cp.cubeType }}-config"
+  {{- end }}
+  {{- end }}
+
+---
+apiVersion: v1
+data:
+  database.yml:  {{ tpl (.Files.Get (printf "values.%s/database.yml" .Values.environment)) . | b64enc }}
+  settings.yml: {{ tpl (.Files.Get (printf "values.%s/settings.yml" .Values.environment)) . | b64enc }}
+  s3.yml: {{ tpl (.Files.Get (printf "values.%s/s3.yml" .Values.environment)) . | b64enc }}
+  newrelic.yml: {{ tpl (.Files.Get (printf "values.%s/newrelic.yml" .Values.environment)) . | b64enc }}
+  cur_coordinator_settings.yml: {{ tpl (.Files.Get (printf "values.%s/cur_coordinator_settings.yml" .Values.environment)) . | b64enc }}
+  queues.yml: {{ tpl (.Files.Get (printf "values.%s/queues.yml" .Values.environment)) . | b64enc }}
+  es_groups.yml: {{ tpl (.Files.Get (printf "values.%s/es_groups.yml" .Values.environment)) . | b64enc }}
+  msp_customers.json: {{ tpl (.Files.Get  (printf "values.%s/msp_customers.json" .Values.environment)) . | b64enc }}
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ .Release.Service }}
+    helm.sh/chart: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  name: "{{ .Release.Name }}-config"

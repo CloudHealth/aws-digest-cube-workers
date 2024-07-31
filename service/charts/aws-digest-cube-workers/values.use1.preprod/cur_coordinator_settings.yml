@@ -1,0 +1,11 @@
+# THIS IS SIMPLY A REFERENCE FOR WHICH BUCKETS EXIST IN PRODUCTION
+# DEVOPS NEEDS TO ADD/CHANGE/DELETE ANY BUCKETS ON PRODUCTION
+# YOU MUST TALK WITH DEVOPS BEFORE DEPLOYING A RELATED CHANGE
+
+cur_coordinator:
+  emr_customer_id: {{ .Values.cur_coordinator.emr_customer_id }}
+  emr_aws_account_id: {{ .Values.cur_coordinator.emr_aws_account_id }}
+  emr_aws_region: us-east-1
+  cur_rat_jar: s3://cht-cur-emr-temp/CUR2RAT-assembly-0.9.3.jar
+  cur_rat_ri_cache_base: s3://cloudhealth-inventory/ri_cache
+  emr_cluster_id: j-1G7P2RKOXTEB2

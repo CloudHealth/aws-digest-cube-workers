@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <profiles>
+        <profile>
+            <repositories>
+
+                <repository>
+                    <id>mvnrepository</id>
+                    <name>mvnrepository</name>
+                    <url>http://repo.maven.apache.org/maven2/</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+
+                <repository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>central</id>
+                    <name>maven-cht-upstream</name>
+                    <url>https://artifactory.mgmt.cloudhealthtech.com/artifactory/maven-cht-upstream</url>
+                </repository>
+
+                <repository>
+                    <snapshots />
+                    <id>snapshots</id>
+                    <name>maven-cht-upstream</name>
+                    <url>https://artifactory.mgmt.cloudhealthtech.com/artifactory/maven-cht-upstream</url>
+                </repository>
+
+            </repositories>
+
+            <pluginRepositories>
+
+                <pluginRepository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>central</id>
+                    <name>maven-cht-upstream</name>
+                    <url>https://artifactory.mgmt.cloudhealthtech.com/artifactory/maven-cht-upstream</url>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <snapshots />
+                    <id>snapshots</id>
+                    <name>maven-cht-upstream</name>
+                    <url>https://artifactory.mgmt.cloudhealthtech.com/artifactory/maven-cht-upstream</url>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>mvnrepository</id>
+                    <name>mvnrepository</name>
+                    <url>http://repo.maven.apache.org/maven2/</url>
+                </pluginRepository>
+
+            </pluginRepositories>
+
+            <id>artifactory</id>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>artifactory</activeProfile>
+    </activeProfiles>
+</settings>
