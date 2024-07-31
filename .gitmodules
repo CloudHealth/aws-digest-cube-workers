@@ -1,0 +1,5 @@
+[submodule "core"]
+	path = core
+	url = https://github.com/CloudHealth/cp-workers.git
+	 # branch to test feasibility. Remove this.
+    branch = mr/groups-deploy-poc
