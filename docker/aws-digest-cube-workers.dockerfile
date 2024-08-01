@@ -47,6 +47,9 @@ RUN unzip -o asset-cache-exporter-1.0-SNAPSHOT-1.zip
 RUN mkdir /root/cp-workers/core
 COPY ./core/Gemfile* /root/cp-workers/core/
 
+RUN echo "Contents of /root/cp-workers/core/ directory:" && ls -la /root/cp-workers/core/
+
+
 #BUNDLE INSTALLS GOES HERE
 # JRuby
 RUN source /usr/local/rvm/scripts/rvm && \
