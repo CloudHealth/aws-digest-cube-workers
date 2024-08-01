@@ -37,7 +37,7 @@ node('management-testing') {
       sh 'cp $GIT_SSH_KEY ssh_key'
       sh "echo $BC_ARTIFACTORY_PASS | docker login -u $BC_ARTIFACTORY_USER --password-stdin $BC_ARTIFACTORY"
       parallel aws_digest_cube_workers_gke: {
-        stage('Build GKE cp-workers') {
+        stage('Build GKE aws-digest-cube-workers') {
           aws_digest_cube_workers_gke_image = docker.build("${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers:${gitCommit()}", "--build-arg RELEASE_VERSION=${gitCommit().take(7)} -f docker/aws-digest-cube-workers.dockerfile .")
         }
       }
