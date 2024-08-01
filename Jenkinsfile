@@ -23,16 +23,17 @@ node('management-testing') {
   def OPEN_MYSQL_PORT
   def HOST_IP
 
-  final scmVars = checkout([
+  final scmVars = checkout(scm)
+  env.GIT_BRANCH = scmVars.GIT_BRANCH
+  env.GIT_URL = scmVars.GIT_URL
+  
+  checkout([
         $class: 'GitSCM',
         branches: scm.branches,
         doGenerateSubmoduleConfigurations: true,
         extensions: scm.extensions + [[$class: 'SubmoduleOption', parentCredentials: true]],
         userRemoteConfigs: scm.userRemoteConfigs
     ])
-  
-  env.GIT_BRANCH = scmVars.GIT_BRANCH
-  env.GIT_URL = scmVars.GIT_URL
 
 
   cleanWs()
