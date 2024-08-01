@@ -36,12 +36,6 @@ node('management-testing') {
           extensions: scm.extensions + [[$class: 'SubmoduleOption', parentCredentials: true]],
           userRemoteConfigs: scm.userRemoteConfigs
       ])
-
-      // Print the contents of the current directory and subdirectories
-      sh 'echo "Current directory structure:"; ls -R'
-                
-       // check whether the sub-modules are properly checked-out
-       sh 'echo "Contents of sub-module core subdirectory:"; ls -la core/'
                 
   }
 
@@ -53,10 +47,14 @@ node('management-testing') {
                       usernamePassword(credentialsId: 'BC_ARTIFACTORY',
                                                   usernameVariable: 'BC_ARTIFACTORY_USER',
                                                   passwordVariable: 'BC_ARTIFACTORY_PASS')]) {
+      
       sh 'cp $GIT_SSH_KEY ssh_key'
       sh "echo $BC_ARTIFACTORY_PASS | docker login -u $BC_ARTIFACTORY_USER --password-stdin $BC_ARTIFACTORY"
       parallel aws_digest_cube_workers_gke: {
         stage('Build GKE aws-digest-cube-workers') {
+          // check whether the sub-modules are properly checked-out
+          sh 'echo "Contents of sub-module core subdirectory:"; ls -la core/'
+
           aws_digest_cube_workers_gke_image = docker.build("${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers:${gitCommit()}", "--build-arg RELEASE_VERSION=${gitCommit().take(7)} -f docker/aws-digest-cube-workers.dockerfile .")
         }
       }
@@ -69,6 +67,8 @@ node('management-testing') {
     echo "HOST IP: " + HOST_IP
     sh "modify_ports.rb ${OPEN_MYSQL_PORT} ${HOST_IP}"
     echo "Rewrote config/database.yml"
+
+    
 
     try {
       sh "docker run -d --name=mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} -p ${OPEN_MYSQL_PORT}:3306 297322132092.dkr.ecr.us-east-1.amazonaws.com/cht/test_db_base/mysql8:latest --default-authentication-plugin=mysql_native_password --sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES --character-set-server=utf8 --collation-server=utf8_unicode_ci"
