@@ -28,16 +28,11 @@ node('management-testing') {
   env.GIT_BRANCH = scmVars.GIT_BRANCH
   env.GIT_URL = scmVars.GIT_URL
 
-    // Modify the scm object to checkout sub-modules
-    scm.extensions.add([$class: 'SubmoduleOption',
-                    disableSubmodules: false,
-                    parentCredentials: true,
-                    recursiveSubmodules: true,
-                    reference: '',
-                    trackingSubmodules: false])
-
-    // Use the modified scm object
-    checkout scm
+  // checkout the submodules
+  sh """
+    git submodule sync
+    git submodule update --init --recursive
+  """
 
   cleanWs()
   stgSetup()
