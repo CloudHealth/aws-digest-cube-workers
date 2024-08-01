@@ -23,16 +23,17 @@ node('management-testing') {
   def OPEN_MYSQL_PORT
   def HOST_IP
 
-  // start with default scm object. necessary to ensure basic repo and properties populated,
-  final scmVars = checkout(scm)
+  final scmVars = checkout([
+        $class: 'GitSCM',
+        branches: scm.branches,
+        doGenerateSubmoduleConfigurations: true,
+        extensions: scm.extensions + [[$class: 'SubmoduleOption', parentCredentials: true]],
+        userRemoteConfigs: scm.userRemoteConfigs
+    ])
+  
   env.GIT_BRANCH = scmVars.GIT_BRANCH
   env.GIT_URL = scmVars.GIT_URL
 
-  // checkout the submodules
-  sh """
-    git submodule sync
-    git submodule update --init --recursive
-  """
 
   cleanWs()
   stgSetup()
