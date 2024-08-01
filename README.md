@@ -11,7 +11,16 @@ To avoid code forking, cp-workers repo has been added as a sub-module. The entir
 You can use the one of the following commands.
 
 ```sh
-git clone --recurse-submodules https://github.com/CloudHealth/aws-digest-cube-workers.git
+git clone git@github.com:CloudHealth/aws-digest-cube-workers.git
+cd pgb-cube-workers
+git submodule init
+git submodule update
+```
+
+Alternatively you can also use this command
+
+```sh
+git clone --recurse-submodules git@github.com:CloudHealth/aws-digest-cube-workers.git
 ```
 
 ## Running sub-module
