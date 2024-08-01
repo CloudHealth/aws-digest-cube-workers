@@ -28,7 +28,6 @@ node('management-testing') {
   env.GIT_URL = scmVars.GIT_URL
   
   stage('checkout submodules'){
-     steps {
 
       checkout([
           $class: 'GitSCM',
@@ -44,7 +43,6 @@ node('management-testing') {
        // check whether the sub-modules are properly checked-out
        sh 'echo "Contents of sub-module core subdirectory:"; ls -la core/'
                 
-     }
   }
 
 
