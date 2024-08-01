@@ -73,7 +73,7 @@ node('management-testing') {
    
     try {
       sh "docker run -d --name=mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} -p ${OPEN_MYSQL_PORT}:3306 297322132092.dkr.ecr.us-east-1.amazonaws.com/cht/test_db_base/mysql8:latest --default-authentication-plugin=mysql_native_password --sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES --character-set-server=utf8 --collation-server=utf8_unicode_ci"
-      workers_img = docker.image("${ecr_registry}/cp-workers/aws-digest-cube-workers_mri:${gitCommit()}")
+      workers_img = docker.image("${ecr_registry}/cp-workers/aws-digest-cube-workers-mri:${gitCommit()}")
       workers_img.inside('''
           -e JENKINS=1 \
           -e RAILS_ENV=test \
@@ -147,8 +147,8 @@ node('management-testing') {
 
           if ( env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'main' ) {
             sh "echo $BC_ARTIFACTORY_PASS | docker login -u $BC_ARTIFACTORY_USER --password-stdin $BC_REGISTRY_PROD"
-            sh "docker image tag ${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers_mri:${gitCommit()} ${BC_REGISTRY_PROD}/master/cht/services/cp-workers/aws-digest-cube-workers:${gitCommit()}"
-            sh "docker push ${BC_REGISTRY_PROD}/master/cht/services/cp-workers/aws-digest-cube-workers_mri:${gitCommit()}"
+            sh "docker image tag ${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers-mri:${gitCommit()} ${BC_REGISTRY_PROD}/master/cht/services/cp-workers/aws-digest-cube-workers-mri:${gitCommit()}"
+            sh "docker push ${BC_REGISTRY_PROD}/master/cht/services/cp-workers/aws-digest-cube-workers-mri:${gitCommit()}"
           }
 
         }
