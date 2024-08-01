@@ -26,7 +26,10 @@ node('management-testing') {
   final scmVars = checkout(scm)
   env.GIT_BRANCH = scmVars.GIT_BRANCH
   env.GIT_URL = scmVars.GIT_URL
-  
+
+  cleanWs()
+  stgSetup()
+
   stage('checkout submodules'){
 
       checkout([
@@ -38,10 +41,7 @@ node('management-testing') {
       ])
                 
   }
-
-
-  cleanWs()
-  stgSetup()
+  
   timestamps {
     withCredentials([sshUserPrivateKey(credentialsId: 'github', keyFileVariable: 'GIT_SSH_KEY'),
                       usernamePassword(credentialsId: 'BC_ARTIFACTORY',
