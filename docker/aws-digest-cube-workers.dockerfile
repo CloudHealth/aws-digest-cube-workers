@@ -52,10 +52,10 @@ RUN echo "Contents of /root/cp-workers/core/ directory:" && ls -la /root/cp-work
 
 #BUNDLE INSTALLS GOES HERE
 # JRuby
-RUN source /usr/local/rvm/scripts/rvm && \
-    rvm use jruby-9.2.14.0 &&\
-    gem install bundler:1.17.3 &&\
-    BUNDLE_GEMFILE=GemfileMriAwsDigest bundle install --with development --no-deployment --binstubs=bin
+# RUN source /usr/local/rvm/scripts/rvm && \
+#    rvm use jruby-9.2.14.0 &&\
+#    gem install bundler:1.17.3 &&\
+#    BUNDLE_GEMFILE=GemfileMriAwsDigest bundle install --with development --no-deployment --binstubs=bin
 
 # Cube workers are running on a different ruby engine and have a different start script.
 RUN source /usr/local/rvm/scripts/rvm && \
