@@ -36,42 +36,7 @@ node('management-testing') {
                                                   passwordVariable: 'BC_ARTIFACTORY_PASS')]) {
       sh 'cp $GIT_SSH_KEY ssh_key'
       sh "echo $BC_ARTIFACTORY_PASS | docker login -u $BC_ARTIFACTORY_USER --password-stdin $BC_ARTIFACTORY"
-      parallel jruby92: {
-        stage('Build JRuby 9.2') {
-          jruby92_image = docker.build("${ecr_registry}/cp-workers/jruby92:${gitCommit()}", "--build-arg RELEASE_VERSION=${gitCommit().take(7)} -f docker/Dockerfile .")
-        }
-      },
-      jrubyNext: {
-        stage('Build JRuby Next') {
-          jruby_next_image = docker.build("${ecr_registry}/cp-workers/jruby-next:${gitCommit()}", "--build-arg RELEASE_VERSION=${gitCommit().take(7)} -f docker/Dockerfile.JRubyNext .")
-        }
-      },
-      mri255: {
-        stage('Build MRI 2.5.5') {
-          mri_255_image = docker.build("${ecr_registry}/cp-workers/mri255:${gitCommit()}", "--build-arg RELEASE_VERSION=${gitCommit().take(7)} -f docker/Dockerfile.Mri25 .")
-        }
-      },
-      jruby92_staging: {
-        stage('Build staging JRuby 9.2') {
-              jruby92_staging_image = docker.build("${ecr_registry}/cp-workers/staging-jruby92:${gitCommit()}", "--build-arg RELEASE_VERSION=${gitCommit().take(7)} -f docker/Dockerfile .")
-        }
-      },
-      mri255_staging: {
-        stage('Build staging MRI 2.5.5') {
-            mri_255_staging_image = docker.build("${ecr_registry}/cp-workers/staging-mri255:${gitCommit()}", "--build-arg RELEASE_VERSION=${gitCommit().take(7)} -f docker/Dockerfile.Mri25 .")
-        }
-      },
-      jrubyNext_staging: {
-        stage('Build staging JRuby Next') {
-            jruby_next_staging_image = docker.build("${ecr_registry}/cp-workers/staging-jruby-next:${gitCommit()}",  "--build-arg RELEASE_VERSION=${gitCommit().take(7)} -f docker/Dockerfile.JRubyNext .")
-        }
-      },
-      jrubyCubes_staging: {
-        stage('Build staging JRubyCubes 9.2.11.1') {
-          jrubycubes_staging_image = docker.build("${ecr_registry}/cp-workers/staging-jrubycubes:${gitCommit()}",  "--build-arg RELEASE_VERSION=${gitCommit().take(7)} -f docker/Dockerfile.JRubyCubes .")
-        }
-      },
-      aws_digest_cube_workers_gke: {
+      parallel aws_digest_cube_workers_gke: {
         stage('Build GKE cp-workers') {
           aws_digest_cube_workers_gke_image = docker.build("${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers:${gitCommit()}", "--build-arg RELEASE_VERSION=${gitCommit().take(7)} -f docker/aws-digest-cube-workers.dockerfile .")
         }
@@ -170,9 +135,7 @@ node('management-testing') {
       }
       stage('Helm package publish Class') {
         stgHelmPublishChartClassicBC(hooks)
-      }  
+      }
     }
     wavefrontMetrics("cp-workers")
 }
-
-
