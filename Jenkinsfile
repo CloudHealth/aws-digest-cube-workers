@@ -27,13 +27,25 @@ node('management-testing') {
   env.GIT_BRANCH = scmVars.GIT_BRANCH
   env.GIT_URL = scmVars.GIT_URL
   
-  checkout([
-        $class: 'GitSCM',
-        branches: scm.branches,
-        doGenerateSubmoduleConfigurations: true,
-        extensions: scm.extensions + [[$class: 'SubmoduleOption', parentCredentials: true]],
-        userRemoteConfigs: scm.userRemoteConfigs
-    ])
+  stage('checkout submodules'){
+     steps {
+
+      checkout([
+          $class: 'GitSCM',
+          branches: scm.branches,
+          doGenerateSubmoduleConfigurations: true,
+          extensions: scm.extensions + [[$class: 'SubmoduleOption', parentCredentials: true]],
+          userRemoteConfigs: scm.userRemoteConfigs
+      ])
+
+      // Print the contents of the current directory and subdirectories
+      sh 'echo "Current directory structure:"; ls -R'
+                
+       // check whether the sub-modules are properly checked-out
+       sh 'echo "Contents of sub-module core subdirectory:"; ls -la core/'
+                
+     }
+  }
 
 
   cleanWs()
