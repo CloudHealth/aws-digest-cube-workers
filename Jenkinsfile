@@ -60,9 +60,9 @@ node('management-testing') {
       }
       sh 'rm ssh_key'
     }
-    
+
+    sh "rm GemfileMriAwsDigest"
     dir('core') {
-      sh "rm GemfileMriAwsDigest"
       OPEN_MYSQL_PORT = findOpenPort(3000,5000)
       HOST_IP = findIp()
       echo "PORT: " + OPEN_MYSQL_PORT
