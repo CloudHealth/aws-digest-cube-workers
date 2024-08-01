@@ -11,16 +11,6 @@ To avoid code forking, cp-workers repo has been added as a sub-module. The entir
 You can use the one of the following commands.
 
 ```sh
-git clone https://github.com/CloudHealth/aws-digest-cube-workers.git
-cd aws-digest-cube-workers
-git submodule init
-git submodule update
-```
-
-Alternatively you can also use this command, once the changes are merged to prod
-
-```sh
-# haven't tested this yet, but expecting it to work.
 git clone --recurse-submodules https://github.com/CloudHealth/aws-digest-cube-workers.git
 ```
 
@@ -40,7 +30,7 @@ Step 2: Running the rake
 cd core
 
 # VERIFY THAT WE'RE USING THE SAME GEMSET, BASED ON LOCAL SETUP AND IF WE DON'T USE RVM NEXT CMD IS NOT NEEDED
-rvm gemset use ruby-2.5.5@aws-digest-group --create 
+rvm gemset use ruby-2.5.5@aws-digest-group --create
 
 BUNDLE_GEMFILE=../GemfileMriAwsDigest AWS_DIGEST_GROUP_OVERRIDE=1 bundle exec rake 'cubes:start'
 # modify the above to choose the right rake task
