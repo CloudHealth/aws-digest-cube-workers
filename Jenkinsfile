@@ -1,3 +1,5 @@
+@Library('cht-jenkins-pipeline') _
+
 node('management-default') {
     stage('Pipeline Configuration') {
       final scmVars = checkout(scm)
