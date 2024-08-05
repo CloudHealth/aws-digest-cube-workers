@@ -1,6 +1,6 @@
 #!/bin/bash
 # wait until MySQL is really available
-maxcounter=20
+maxcounter=60
 
 HOST_PORT=$1
 OPEN_MYSQL_PORT=$2
