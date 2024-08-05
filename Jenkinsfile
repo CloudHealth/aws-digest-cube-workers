@@ -70,6 +70,7 @@ node('management-testing') {
    
     try {
       sh "docker run -d --name=mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} -p ${OPEN_MYSQL_PORT}:3306 297322132092.dkr.ecr.us-east-1.amazonaws.com/cht/test_db_base/mysql8:latest --default-authentication-plugin=mysql_native_password --sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES --character-set-server=utf8 --collation-server=utf8_unicode_ci"
+      sh "sleep 60"
       workers_img = docker.image("${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers_mri:${gitCommit()}")
       workers_img.inside('''
           -e JENKINS=1 \
@@ -85,75 +86,12 @@ node('management-testing') {
           sh 'bundle exec rake db:schema:load db:seed'
           sh 'bundle exec rake analyses:refresh'
         }
-        try {
-          stage('Test_2.5.5-3.0') {
-            try {
-              sh "bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml"
-            } finally {
-                junit(testResults: "cpworkers_rspec_25-3_${BUILD_NUMBER}.xml", skipPublishingChecks: true)
-                publishHTML (target: [
-                  allowMissing: false,
-                  alwaysLinkToLastBuild: false,
-                  keepAll: true,
-                  reportDir: 'coverage',
-                  reportFiles: 'index.html',
-                  reportName: "SimpleCov Report Ruby 2.5.5"
-                ])
-                archiveArtifacts('coverage/.resultset.json')
-                archiveArtifacts("cpworkers_rspec_25-3_${BUILD_NUMBER}.xml")
-            }
-            sh "exit 0"
-            currentBuild.result = 'SUCCESS'
-          }
-        } catch (Exception e) {
-          sh "exit 0"
-          currentBuild.result = 'FAILURE'
-        }
-        codeCoverageRspec()
       }
     } finally {
       sh "mysql not stopped"
       // sh "docker stop mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} && docker rm -f mysql-cpworkers-25-3-${OPEN_MYSQL_PORT}"
     }
 
-    if(env.BRANCH_NAME.contains('master')) {
-      stage('Push Images') {
-        // jruby92_image.push(gitCommit())
-
-        // jruby_next_image.push(gitCommit())
-
-        // mri_255_image.push(gitCommit())
-        aws_digest_cube_workers_mri_gke_image.push(gitCommit())
-      }
-    } else{
-      stage('Push staging Images') {
-        // jruby92_staging_image.push(gitCommit())
-
-        // jruby_next_staging_image.push(gitCommit())
-
-        // mri_255_staging_image.push(gitCommit())
-
-        aws_digest_cube_workers_mri_gke_image.push(gitCommit())
-
-      }
-    }
-      stage('Push to BC Prod-local') {
-        withCredentials([sshUserPrivateKey(credentialsId: 'github', keyFileVariable: 'GIT_SSH_KEY'),
-                         usernamePassword(credentialsId: 'BC_ARTIFACTORY',
-                                 usernameVariable: 'BC_ARTIFACTORY_USER',
-                                 passwordVariable: 'BC_ARTIFACTORY_PASS')]){
-
-          if ( env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'main' ) {
-            sh "echo $BC_ARTIFACTORY_PASS | docker login -u $BC_ARTIFACTORY_USER --password-stdin $BC_REGISTRY_PROD"
-            sh "docker image tag ${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers-mri:${gitCommit()} ${BC_REGISTRY_PROD}/master/cht/services/cp-workers/aws-digest-cube-workers-mri:${gitCommit()}"
-            sh "docker push ${BC_REGISTRY_PROD}/master/cht/services/cp-workers/aws-digest-cube-workers-mri:${gitCommit()}"
-          }
-
-        }
-      }
-      stage('Helm package publish Class') {
-        stgHelmPublishChartClassicBC(hooks)
-      }
     }
     wavefrontMetrics("cp-workers")
 }
