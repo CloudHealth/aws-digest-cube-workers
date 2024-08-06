@@ -80,7 +80,7 @@ node('management-testing') {
       ''') {
         stage('Populate DB_2.5.5-3.0') {
           sh "bash docker/test_mysql_connection.sh ${HOST_IP} ${OPEN_MYSQL_PORT}"
-          sh 'mv GemfileMriAwsDigest Gemfile && mv GemfileMriAwsDigest.lock Gemfile.lock'
+          sh 'mv GemfileMriAwsDigest Gemfile'
           sh 'bundle exec rake db:schema:load db:seed'
           sh 'bundle exec rake analyses:refresh'
         }
