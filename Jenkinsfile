@@ -85,13 +85,13 @@ node('management-testing') {
         stage('Populate DB_2.5.5-3.0') {
           sh "bash docker/test_mysql_connection.sh ${HOST_IP} ${OPEN_MYSQL_PORT}"
           sh 'mv GemfileMriAwsDigest Gemfile'
-          sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle exec rake db:schema:load db:seed'
-          sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle exec rake analyses:refresh'
+          sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake db:schema:load db:seed'
+          sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake analyses:refresh'
         }
         try {
           stage('Test_2.5.5-3.0') {
             try {
-              sh "source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml"
+              sh "source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml"
             } finally {
                 junit(testResults: "cpworkers_rspec_25-3_${BUILD_NUMBER}.xml", skipPublishingChecks: true)
                 publishHTML (target: [
