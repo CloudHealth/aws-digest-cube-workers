@@ -73,7 +73,6 @@ node('management-testing') {
    
     try {
       sh "docker run -d --name=mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} -p ${OPEN_MYSQL_PORT}:3306 297322132092.dkr.ecr.us-east-1.amazonaws.com/cht/test_db_base/mysql8:latest --default-authentication-plugin=mysql_native_password --sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES --character-set-server=utf8 --collation-server=utf8_unicode_ci"
-      sh "sleep 60"
       workers_img = docker.image("${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers_mri:${gitCommit()}")
       workers_img.inside('''
           -e JENKINS=1 \
@@ -85,7 +84,7 @@ node('management-testing') {
       ''') {
         stage('Populate DB_2.5.5-3.0') {
           sh "bash docker/test_mysql_connection.sh ${HOST_IP} ${OPEN_MYSQL_PORT}"
-          sh 'mv GemfileMriAwsDigest Gemfile && mv GemfileMriAwsDigest.lock Gemfile.lock'
+          sh 'mv GemfileMriAwsDigest Gemfile'
           sh 'bundle exec rake db:schema:load db:seed'
           sh 'bundle exec rake analyses:refresh'
         }

@@ -5,7 +5,7 @@ FROM artifactory.mgmt.cloudhealthtech.com/cht-docker/jruby:9.2.14.0-${JDK_VERSIO
 #Dockerfile is maintained by Vivek Kotecha (vkotecha@vmware.com)
 LABEL maintainer=vkotecha@vmware.com
 
-RUN apt-get install -y vim p7zip-full
+RUN apt-get install -y vim p7zip-full mariadb-client
 
 ARG RELEASE_VERSION
 
