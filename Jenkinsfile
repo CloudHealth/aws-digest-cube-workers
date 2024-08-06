@@ -87,8 +87,6 @@ node('management-testing') {
           sh 'bundle exec rake analyses:refresh'
         }
       }
-    } finally {
-      sh "docker stop mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} && docker rm -f mysql-cpworkers-25-3-${OPEN_MYSQL_PORT}"
     }
 
     }
