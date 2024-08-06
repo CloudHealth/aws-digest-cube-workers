@@ -62,7 +62,7 @@ RUN source /usr/local/rvm/scripts/rvm && \
     rvm use 2.5.5@cubes &&\
     gem install bundler:1.17.3 &&\
     gem install mysql2:0.3.21 &&\
-    USE_SYSTEM_GECODE=1 BUNDLE_GEMFILE=GemfileMriAwsDigest bundle install --with development --no-deployment --binstubs=bin
+    USE_SYSTEM_GECODE=1 BUNDLE_GEMFILE=GemfileMriAwsDigest bundle install --no-deployment --binstubs=bin
 
 # modify the copy contents such that cp-workers content and this repo is flattened. this repo contents are superceded
 COPY core/ /root/cp-workers/
