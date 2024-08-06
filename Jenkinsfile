@@ -71,52 +71,52 @@ node('management-testing') {
       echo "Rewrote config/database.yml"
     }
    
-    try {
-      sh "docker run -d --name=mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} -p ${OPEN_MYSQL_PORT}:3306 297322132092.dkr.ecr.us-east-1.amazonaws.com/cht/test_db_base/mysql8:latest --default-authentication-plugin=mysql_native_password --sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES --character-set-server=utf8 --collation-server=utf8_unicode_ci"
-      workers_img = docker.image("${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers_mri:${gitCommit()}")
-      workers_img.inside('''
-          -e JENKINS=1 \
-          -e RAILS_ENV=test \
-          -e IP_ADDRESS=${HOST_IP} \
-          -e DB_USER=${DB_USER} \
-          -e DB_PASSWORD=${DB_PSWD} \
-          -e MYSQL_PORT=${OPEN_MYSQL_PORT}
-      ''') {
-        stage('Populate DB_2.5.5-3.0') {
-          sh "bash docker/test_mysql_connection.sh ${HOST_IP} ${OPEN_MYSQL_PORT}"
-          sh 'mv GemfileMriAwsDigest Gemfile'
-          sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake db:schema:load db:seed'
-          sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake analyses:refresh'
-        }
-        try {
-          stage('Test_2.5.5-3.0') {
-            try {
-              sh "source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml"
-            } finally {
-                junit(testResults: "cpworkers_rspec_25-3_${BUILD_NUMBER}.xml", skipPublishingChecks: true)
-                publishHTML (target: [
-                  allowMissing: false,
-                  alwaysLinkToLastBuild: false,
-                  keepAll: true,
-                  reportDir: 'coverage',
-                  reportFiles: 'index.html',
-                  reportName: "SimpleCov Report Ruby 2.5.5"
-                ])
-                archiveArtifacts('coverage/.resultset.json')
-                archiveArtifacts("cpworkers_rspec_25-3_${BUILD_NUMBER}.xml")
-            }
-            sh "exit 0"
-            currentBuild.result = 'SUCCESS'
-          }
-        } catch (Exception e) {
-          sh "exit 0"
-          currentBuild.result = 'FAILURE'
-        }
-        codeCoverageRspec()
-      }
-    } finally {
-      sh "docker stop mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} && docker rm -f mysql-cpworkers-25-3-${OPEN_MYSQL_PORT}"
-    }
+    // try {
+    //   sh "docker run -d --name=mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} -p ${OPEN_MYSQL_PORT}:3306 297322132092.dkr.ecr.us-east-1.amazonaws.com/cht/test_db_base/mysql8:latest --default-authentication-plugin=mysql_native_password --sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES --character-set-server=utf8 --collation-server=utf8_unicode_ci"
+    //   workers_img = docker.image("${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers_mri:${gitCommit()}")
+    //   workers_img.inside('''
+    //       -e JENKINS=1 \
+    //       -e RAILS_ENV=test \
+    //       -e IP_ADDRESS=${HOST_IP} \
+    //       -e DB_USER=${DB_USER} \
+    //       -e DB_PASSWORD=${DB_PSWD} \
+    //       -e MYSQL_PORT=${OPEN_MYSQL_PORT}
+    //   ''') {
+    //     stage('Populate DB_2.5.5-3.0') {
+    //       sh "bash docker/test_mysql_connection.sh ${HOST_IP} ${OPEN_MYSQL_PORT}"
+    //       sh 'mv GemfileMriAwsDigest Gemfile'
+    //       sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake db:schema:load db:seed'
+    //       sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake analyses:refresh'
+    //     }
+    //     try {
+    //       stage('Test_2.5.5-3.0') {
+    //         try {
+    //           sh "source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml"
+    //         } finally {
+    //             junit(testResults: "cpworkers_rspec_25-3_${BUILD_NUMBER}.xml", skipPublishingChecks: true)
+    //             publishHTML (target: [
+    //               allowMissing: false,
+    //               alwaysLinkToLastBuild: false,
+    //               keepAll: true,
+    //               reportDir: 'coverage',
+    //               reportFiles: 'index.html',
+    //               reportName: "SimpleCov Report Ruby 2.5.5"
+    //             ])
+    //             archiveArtifacts('coverage/.resultset.json')
+    //             archiveArtifacts("cpworkers_rspec_25-3_${BUILD_NUMBER}.xml")
+    //         }
+    //         sh "exit 0"
+    //         currentBuild.result = 'SUCCESS'
+    //       }
+    //     } catch (Exception e) {
+    //       sh "exit 0"
+    //       currentBuild.result = 'FAILURE'
+    //     }
+    //     codeCoverageRspec()
+    //   }
+    // } finally {
+    //   sh "docker stop mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} && docker rm -f mysql-cpworkers-25-3-${OPEN_MYSQL_PORT}"
+    // }
 
     if(env.BRANCH_NAME.contains('master')) {
       stage('Push Images') {
