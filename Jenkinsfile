@@ -95,10 +95,10 @@ node('management-testing') {
         try {
           stage('Test_2.5.5-3.0') {
             try {
-              // sh "source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml"
-              dir('core') {
-                sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml'
-              }
+              sh "source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml"
+              // dir('core') {
+                // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml'
+              // }
             } finally {
               // dir('core') {
                 junit(testResults: "cpworkers_rspec_25-3_${BUILD_NUMBER}.xml", skipPublishingChecks: true)
