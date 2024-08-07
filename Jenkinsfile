@@ -88,8 +88,8 @@ node('management-testing') {
             // sh 'mv GemfileMriAwsDigest Gemfile'
             // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake db:schema:load db:seed'
             // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake analyses:refresh'
-            sh 'RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rake db:schema:load db:seed'
-            sh 'RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rake analyses:refresh'
+            sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rake db:schema:load db:seed'
+            sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rake analyses:refresh'
           }
         }
         try {
@@ -97,7 +97,7 @@ node('management-testing') {
             try {
               // sh "source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml"
               dir('core') {
-                sh 'RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml'
+                sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml'
               }
             } finally {
               dir('core') {
