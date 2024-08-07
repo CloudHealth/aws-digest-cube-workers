@@ -1,11 +1,12 @@
 ARG JDK_VERSION=jdk11
 
-FROM artifactory.mgmt.cloudhealthtech.com/cht-docker/jruby:9.2.14.0-${JDK_VERSION}-maven-rvm
+FROM artifactory.mgmt.cloudhealthtech.com/docker/ruby:2.5.5-alpine
 
 #Dockerfile is maintained by Vivek Kotecha (vkotecha@vmware.com)
 LABEL maintainer=vkotecha@vmware.com
 
-RUN apt-get install -y vim p7zip-full mariadb-client
+RUN apk update && apk add --no-cache \
+  build-base git openssh mysql-client mariadb-dev bash curl openjdk8 maven p7zip
 
 ARG RELEASE_VERSION
 
@@ -28,6 +29,7 @@ COPY docker/config/cronbox.sh /root/cp-workers/cronbox.sh
 COPY docker/config/cronboxjruby.sh /root/cp-workers/cronboxjruby.sh
 RUN chmod 600 /root/.ssh/id_rsa /root/.ssh/config
 
+RUN gem install bundler -v "1.17.3" --no-document
 COPY docker/config/bundle/config /root/.bundle/config
 ADD docker/config/entrypoint-cube-workers_k8s.sh /root/cp-workers/entrypoint-cube-workers_k8s.sh
 
@@ -49,20 +51,8 @@ COPY ./core/Gemfile* /root/cp-workers/core/
 
 RUN echo "Contents of /root/cp-workers/core/ directory:" && ls -la /root/cp-workers/core/
 
-
-#BUNDLE INSTALLS GOES HERE
-# JRuby
-# RUN source /usr/local/rvm/scripts/rvm && \
-#    rvm use jruby-9.2.14.0 &&\
-#    gem install bundler:1.17.3 &&\
-#    BUNDLE_GEMFILE=GemfileMriAwsDigest bundle install --with development --no-deployment --binstubs=bin
-
 # Cube workers are running on a different ruby engine and have a different start script.
-RUN source /usr/local/rvm/scripts/rvm && \
-    rvm use 2.5.5@cubes &&\
-    gem install bundler:1.17.3 &&\
-    gem install mysql2:0.3.21 &&\
-    USE_SYSTEM_GECODE=1 BUNDLE_GEMFILE=GemfileMriAwsDigest bundle install --with development --no-deployment --binstubs=bin
+RUN USE_SYSTEM_GECODE=1 bundle install --no-deployment --binstubs=bin
 
 # modify the copy contents such that cp-workers content and this repo is flattened. this repo contents are superceded
 COPY core/ /root/cp-workers/
