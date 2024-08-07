@@ -84,13 +84,13 @@ node('management-testing') {
       ''') {
         stage('Populate DB_2.5.5-3.0') {
           sh "bash docker/test_mysql_connection.sh ${HOST_IP} ${OPEN_MYSQL_PORT}"
-          dir('core') {
-            // sh 'mv GemfileMriAwsDigest Gemfile'
-            // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake db:schema:load db:seed'
-            // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake analyses:refresh'
-            sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rake db:schema:load db:seed'
-            sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rake analyses:refresh'
-          }
+          // dir('core') {
+            sh 'mv GemfileMriAwsDigest Gemfile'
+            sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake db:schema:load db:seed'
+            sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake analyses:refresh'
+            // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rake db:schema:load db:seed'
+            // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rake analyses:refresh'
+          // }
         }
         try {
           stage('Test_2.5.5-3.0') {
@@ -100,7 +100,7 @@ node('management-testing') {
                 sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml'
               }
             } finally {
-              dir('core') {
+              // dir('core') {
                 junit(testResults: "cpworkers_rspec_25-3_${BUILD_NUMBER}.xml", skipPublishingChecks: true)
                 publishHTML (target: [
                   allowMissing: false,
@@ -112,7 +112,7 @@ node('management-testing') {
                 ])
                 archiveArtifacts('coverage/.resultset.json')
                 archiveArtifacts("cpworkers_rspec_25-3_${BUILD_NUMBER}.xml")
-              }
+              // }
             }
             sh "exit 0"
             currentBuild.result = 'SUCCESS'
