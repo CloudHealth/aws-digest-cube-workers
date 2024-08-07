@@ -51,8 +51,9 @@ COPY ./core/Gemfile* /root/cp-workers/core/
 
 RUN echo "Contents of /root/cp-workers/core/ directory:" && ls -la /root/cp-workers/core/
 
+
 # Cube workers are running on a different ruby engine and have a different start script.
-RUN USE_SYSTEM_GECODE=1 bundle install --no-deployment --binstubs=bin
+RUN USE_SYSTEM_GECODE=1 BUNDLE_GEMFILE=GemfileMriAwsDigest bundle install --no-deployment --binstubs=bin
 
 # modify the copy contents such that cp-workers content and this repo is flattened. this repo contents are superceded
 COPY core/ /root/cp-workers/
@@ -62,5 +63,3 @@ RUN chmod +x /root/cp-workers/docker/test_mysql_connection.sh
 RUN touch /root/version.txt
 RUN date +"%FT%H%M%S" > /root/version.txt
 
-RUN echo "source /usr/local/rvm/scripts/rvm" >> /etc/bash.bashrc
-RUN echo "rvm use 2.5.5@cubes" >> /etc/bash.bashrc
