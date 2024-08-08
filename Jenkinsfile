@@ -58,14 +58,13 @@ node('management-testing') {
       sh 'rm ssh_key'
     }
 
-    dir('core') {
-      OPEN_MYSQL_PORT = findOpenPort(3000,5000)
-      HOST_IP = findIp()
-      echo "PORT: " + OPEN_MYSQL_PORT
-      echo "HOST IP: " + HOST_IP
-      sh "modify_ports.rb ${OPEN_MYSQL_PORT} ${HOST_IP}"
-      echo "Rewrote config/database.yml"
-    }
+    OPEN_MYSQL_PORT = findOpenPort(3000,5000)
+    HOST_IP = findIp()
+    echo "PORT: " + OPEN_MYSQL_PORT
+    echo "HOST IP: " + HOST_IP
+    sh "modify_ports.rb ${OPEN_MYSQL_PORT} ${HOST_IP}"
+    echo "Rewrote config/database.yml"
+
 
     try {
       sh "docker run -d --name=mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} -p ${OPEN_MYSQL_PORT}:3306 297322132092.dkr.ecr.us-east-1.amazonaws.com/cht/test_db_base/mysql8:latest --default-authentication-plugin=mysql_native_password --sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES --character-set-server=utf8 --collation-server=utf8_unicode_ci"
@@ -115,21 +114,10 @@ node('management-testing') {
 
     if(env.BRANCH_NAME.contains('master')) {
       stage('Push Images') {
-        // jruby92_image.push(gitCommit())
-
-        // jruby_next_image.push(gitCommit())
-
-        // mri_255_image.push(gitCommit())
         aws_digest_cube_workers_mri_gke_image.push(gitCommit())
       }
     } else{
       stage('Push staging Images') {
-        // jruby92_staging_image.push(gitCommit())
-
-        // jruby_next_staging_image.push(gitCommit())
-
-        // mri_255_staging_image.push(gitCommit())
-
         aws_digest_cube_workers_mri_gke_image.push(gitCommit())
 
       }

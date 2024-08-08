@@ -12,7 +12,7 @@ You can use the one of the following commands.
 
 ```sh
 git clone git@github.com:CloudHealth/aws-digest-cube-workers.git
-cd pgb-cube-workers
+cd aws-digest-cube-workers
 git submodule init
 git submodule update
 ```

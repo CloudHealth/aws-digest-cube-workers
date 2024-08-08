@@ -47,6 +47,10 @@ RUN unzip -o asset-cache-exporter-1.0-SNAPSHOT-1.zip
 COPY core/ /root/cp-workers/
 COPY .[^core]* /root/cp-workers
 
+#temp: delete me: logging the contents of the directory
+RUN echo "Contents of /root/cp-workers/ directory:" && ls -la /root/cp-workers/
+
+
 # Bundle Mri
 RUN source /usr/local/rvm/scripts/rvm && \
     rvm use 2.5.5@cubes &&\
