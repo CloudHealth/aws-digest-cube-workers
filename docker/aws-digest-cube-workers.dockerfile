@@ -48,7 +48,7 @@ COPY core/ /root/cp-workers/
 COPY .[^core]* /root/cp-workers
 
 #temp: delete me: logging the contents of the directory
-RUN echo "Contents of /root/cp-workers/ directory:" && ls -la /root/cp-workers/
+RUN echo "Contents of /root/cp-workers/ directory:" && ls -ltra /root/cp-workers/
 
 
 # Bundle Mri
