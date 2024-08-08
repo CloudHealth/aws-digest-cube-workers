@@ -58,19 +58,6 @@ node('management-testing') {
       sh 'rm ssh_key'
     }
 
-    // temporarily push docker to artifactory to debug the docker contents
-    stage('debug') {
-        aws_digest_cube_workers_mri_gke_image.push(gitCommit())
-        withCredentials([sshUserPrivateKey(credentialsId: 'github', keyFileVariable: 'GIT_SSH_KEY'),
-                         usernamePassword(credentialsId: 'BC_ARTIFACTORY',
-                                 usernameVariable: 'BC_ARTIFACTORY_USER',
-                                 passwordVariable: 'BC_ARTIFACTORY_PASS')]){
-            sh "echo $BC_ARTIFACTORY_PASS | docker login -u $BC_ARTIFACTORY_USER --password-stdin $BC_REGISTRY_PROD"
-            sh "docker image tag ${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers-mri:${gitCommit()} ${BC_REGISTRY_PROD}/master/cht/services/cp-workers/aws-digest-cube-workers-mri:${gitCommit()}"
-            sh "docker push ${BC_REGISTRY_PROD}/master/cht/services/cp-workers/aws-digest-cube-workers-mri:${gitCommit()}"
-        }
-    }
-
     OPEN_MYSQL_PORT = findOpenPort(3000,5000)
     HOST_IP = findIp()
     echo "PORT: " + OPEN_MYSQL_PORT
