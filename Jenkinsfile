@@ -39,29 +39,25 @@ node('management-testing') {
           extensions: scm.extensions + [[$class: 'SubmoduleOption', parentCredentials: true]],
           userRemoteConfigs: scm.userRemoteConfigs
       ])
-                
+
   }
-  
+
   timestamps {
     withCredentials([sshUserPrivateKey(credentialsId: 'github', keyFileVariable: 'GIT_SSH_KEY'),
                       usernamePassword(credentialsId: 'BC_ARTIFACTORY',
                                                   usernameVariable: 'BC_ARTIFACTORY_USER',
                                                   passwordVariable: 'BC_ARTIFACTORY_PASS')]) {
-      
+
       sh 'cp $GIT_SSH_KEY ssh_key'
       sh "echo $BC_ARTIFACTORY_PASS | docker login -u $BC_ARTIFACTORY_USER --password-stdin $BC_ARTIFACTORY"
       parallel aws_digest_cube_workers_gke: {
         stage('Build GKE aws-digest-cube-workers') {
-          // check whether the sub-modules are properly checked-out
-          sh 'echo "Contents of sub-module core subdirectory:"; ls -la core/'
-
           aws_digest_cube_workers_mri_gke_image = docker.build("${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers_mri:${gitCommit()}", "--build-arg RELEASE_VERSION=${gitCommit().take(7)} -f docker/aws-digest-cube-workers.dockerfile .")
         }
       }
       sh 'rm ssh_key'
     }
 
-    // sh "rm GemfileMriAwsDigest"
     dir('core') {
       OPEN_MYSQL_PORT = findOpenPort(3000,5000)
       HOST_IP = findIp()
@@ -70,7 +66,7 @@ node('management-testing') {
       sh "modify_ports.rb ${OPEN_MYSQL_PORT} ${HOST_IP}"
       echo "Rewrote config/database.yml"
     }
-   
+
     try {
       sh "docker run -d --name=mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} -p ${OPEN_MYSQL_PORT}:3306 297322132092.dkr.ecr.us-east-1.amazonaws.com/cht/test_db_base/mysql8:latest --default-authentication-plugin=mysql_native_password --sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES --character-set-server=utf8 --collation-server=utf8_unicode_ci"
       workers_img = docker.image("${BC_ARTIFACTORY}/pr/cht/services/cp-workers/aws-digest-cube-workers_mri:${gitCommit()}")
@@ -84,24 +80,14 @@ node('management-testing') {
       ''') {
         stage('Populate DB_2.5.5-3.0') {
           sh "bash docker/test_mysql_connection.sh ${HOST_IP} ${OPEN_MYSQL_PORT}"
-          // dir('core') {
-            // sh 'mv GemfileMriAwsDigest Gemfile'
-            // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake db:schema:load db:seed'
-            sh 'rvm use ruby-2.5.5 && RAILS_ENV=development BUNDLE_GEMFILE=GemfileMriAwsDigest BUNDLE_USER_HOME=/root BUNDLE_PATH=/home/cloudhealth/bundle/ bundle exec rake db:schema:load db:seed'
-            sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake analyses:refresh'
-            // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rake db:schema:load db:seed'
-            // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rake analyses:refresh'
-          // }
+          sh 'RAILS_ENV=development BUNDLE_GEMFILE=GemfileMriAwsDigest bundle exec rake db:schema:load db:seed'
+          sh 'RAILS_ENV=development BUNDLE_GEMFILE=GemfileMriAwsDigest bundle exec rake analyses:refresh'
         }
         try {
           stage('Test_2.5.5-3.0') {
             try {
-              sh "source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml"
-              // dir('core') {
-                // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml'
-              // }
+              sh "RAILS_ENV=test BUNDLE_GEMFILE=GemfileMriAwsDigest bundle exec rspec --format documentation --format RspecJunitFormatter --out cpworkers_rspec_25-3_${BUILD_NUMBER}.xml"
             } finally {
-              // dir('core') {
                 junit(testResults: "cpworkers_rspec_25-3_${BUILD_NUMBER}.xml", skipPublishingChecks: true)
                 publishHTML (target: [
                   allowMissing: false,
@@ -113,7 +99,6 @@ node('management-testing') {
                 ])
                 archiveArtifacts('coverage/.resultset.json')
                 archiveArtifacts("cpworkers_rspec_25-3_${BUILD_NUMBER}.xml")
-              // }
             }
             sh "exit 0"
             currentBuild.result = 'SUCCESS'
