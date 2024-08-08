@@ -125,7 +125,8 @@ node('management-testing') {
         codeCoverageRspec()
       }
     } finally {
-      sh "docker stop mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} && docker rm -f mysql-cpworkers-25-3-${OPEN_MYSQL_PORT}"
+      sh "mysql not stopped"
+      // sh "docker stop mysql-cpworkers-25-3-${OPEN_MYSQL_PORT} && docker rm -f mysql-cpworkers-25-3-${OPEN_MYSQL_PORT}"
     }
 
     if(env.BRANCH_NAME.contains('master')) {
