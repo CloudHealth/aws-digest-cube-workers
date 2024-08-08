@@ -1,9 +1,14 @@
 # deployment group override variables shared between cp_workers and aws_digest_cube_workers
 enable_aws_digest_group_override = (ENV['AWS_DIGEST_GROUP_OVERRIDE'] || '') != ''
 use_cht_src = (ENV['USE_CHT_SRC'] || '') != ''
+gem_file_path = ENV['GEM_FILE_PATH'] || '../GemfileMri'
 
 # re-use the Gemfile from cp-workers
-eval_gemfile File.expand_path('../core/GemfileMri', __FILE__)
+if gem_file_path != ''
+    eval_gemfile File.expand_path(gem_file_path, __FILE__)
+else
+    eval_gemfile File.expand_path('../core/GemfileMri', __FILE__)
+end
 
 # make specific required overrides
 if enable_aws_digest_group_override && !use_cht_src

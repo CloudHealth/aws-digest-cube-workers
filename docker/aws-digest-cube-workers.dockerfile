@@ -5,7 +5,7 @@ FROM artifactory.mgmt.cloudhealthtech.com/cht-docker/jruby:9.2.14.0-${JDK_VERSIO
 #Dockerfile is maintained by Vivek Kotecha (vkotecha@vmware.com)
 LABEL maintainer=vkotecha@vmware.com
 
-RUN apt-get install -y vim p7zip-full
+RUN apt-get install -y vim p7zip-full mariadb-client
 
 ARG RELEASE_VERSION
 
@@ -43,20 +43,22 @@ WORKDIR /root/cp-workers
 RUN curl https://artifactory.mgmt.cloudhealthtech.com/artifactory/cicd/asset-cache-exporter-1.0-SNAPSHOT-1.zip --output asset-cache-exporter-1.0-SNAPSHOT-1.zip
 RUN unzip -o asset-cache-exporter-1.0-SNAPSHOT-1.zip
 
-# JRuby
-RUN source /usr/local/rvm/scripts/rvm && \
-    rvm use jruby-9.2.14.0 &&\
-    gem install bundler:1.17.3 &&\
-    bundle install --with development --no-deployment --binstubs=bin
+# modify the copy contents such that cp-workers content and this repo is flattened. this repo contents are superceded
+COPY core/ /root/cp-workers/
+COPY .[^core]* /root/cp-workers
 
-# Cube workers are running on a different ruby engine and have a different start script.
+#temp: delete me: logging the contents of the directory
+RUN echo "Contents of /root/cp-workers/ directory:" && ls -ltra /root/cp-workers/
+RUN echo "Contents of /root/cp-workers/config directory:" && ls -ltra /root/cp-workers/config
+
+
+# Bundle Mri
 RUN source /usr/local/rvm/scripts/rvm && \
     rvm use 2.5.5@cubes &&\
     gem install bundler:1.17.3 &&\
     gem install mysql2:0.3.21 &&\
-    USE_SYSTEM_GECODE=1 BUNDLE_GEMFILE=GemfileMri bundle install --with development --no-deployment --binstubs=bin
+    USE_SYSTEM_GECODE=1 BUNDLE_GEMFILE=GemfileMriAwsDigest bundle install --no-deployment --binstubs=bin
 
-COPY . /root/cp-workers
 RUN chmod +x /root/cp-workers/docker/test_mysql_connection.sh
 
 RUN touch /root/version.txt
