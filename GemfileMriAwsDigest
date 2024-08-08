@@ -3,7 +3,10 @@ enable_aws_digest_group_override = (ENV['AWS_DIGEST_GROUP_OVERRIDE'] || '') != '
 use_cht_src = (ENV['USE_CHT_SRC'] || '') != ''
 
 # re-use the Gemfile from cp-workers
-eval_gemfile File.expand_path('../core/GemfileMri', __FILE__)
+if use_cht_src
+    eval_gemfile File.expand_path('../core/GemfileMri', __FILE__)
+else
+    eval_gemfile File.expand_path('../GemfileMri', __FILE__)
 
 # make specific required overrides
 if enable_aws_digest_group_override && !use_cht_src
