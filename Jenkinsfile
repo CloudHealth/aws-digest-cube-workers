@@ -87,7 +87,7 @@ node('management-testing') {
           // dir('core') {
             // sh 'mv GemfileMriAwsDigest Gemfile'
             // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake db:schema:load db:seed'
-            sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=development BUNDLE_GEMFILE=GemfileMriAwsDigest bundle exec rake db:schema:load db:seed'
+            sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=development BUNDLE_GEMFILE=GemfileMriAwsDigest BUNDLE_USER_HOME=/root BUNDLE_PATH=/home/cloudhealth/bundle/ bundle exec rake db:schema:load db:seed'
             sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && bundle install && bundle exec rake analyses:refresh'
             // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rake db:schema:load db:seed'
             // sh 'source /usr/local/rvm/scripts/rvm && rvm use 2.5.5@cubes && RAILS_ENV=test BUNDLE_GEMFILE=../GemfileMriAwsDigest bundle exec rake analyses:refresh'
