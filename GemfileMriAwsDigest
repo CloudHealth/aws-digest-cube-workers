@@ -5,8 +5,8 @@ use_cht_src = (ENV['USE_CHT_SRC'] || '') != ''
 # re-use the Gemfile from cp-workers
 if use_cht_src
     eval_gemfile File.expand_path('../core/GemfileMri', __FILE__)
-else
-    eval_gemfile File.expand_path('../GemfileMri', __FILE__)
+else # inside docker, files are flattened
+    eval_gemfile File.expand_path('GemfileMri', __FILE__)
 end
 
 # make specific required overrides
